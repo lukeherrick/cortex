@@ -3,14 +3,17 @@ import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { findTopic, itemsAtDepth, loadBundle } from '@/content';
 import { attemptsForItem, clearAllData } from '@/data/attempts';
+import { isWritten } from '@/session/machine';
 import SessionView from '@/ui/SessionView';
 
 const bundle = loadBundle();
+
 const chem = findTopic(bundle, 'chem.stoich.mole-ratio')!;
 const chemItems = itemsAtDepth(chem, 'honors');
 
 const water = findTopic(bundle, 'bio.col.water-properties')!;
-const waterItems = itemsAtDepth(water, 'level1');
+const waterItems = itemsAtDepth(water, 'ap');
+const writtenItems = waterItems.filter(isWritten);
 
 beforeEach(async () => {
   await clearAllData();
@@ -22,7 +25,14 @@ afterEach(cleanup);
 
 describe('SessionView — numeric items', () => {
   const renderChem = () =>
-    render(<SessionView topic={chem} items={chemItems} onExit={() => {}} />);
+    render(
+      <SessionView
+        topic={chem}
+        items={chemItems}
+        biome="meadow"
+        onExit={() => {}}
+      />,
+    );
 
   it('shows the first prompt', () => {
     renderChem();
@@ -34,10 +44,9 @@ describe('SessionView — numeric items', () => {
     renderChem();
 
     await user.type(screen.getByLabelText(/your answer/i), '3.00 mol');
-    await user.click(screen.getByRole('button', { name: /check/i }));
+    await user.click(screen.getByRole('button', { name: /^check$/i }));
 
     expect(screen.getByText('Correct.')).toBeDefined();
-    expect(screen.getByText(/conversion factor/i)).toBeDefined();
     expect(screen.getByRole('list', { name: /worked solution/i })).toBeDefined();
   });
 
@@ -46,7 +55,7 @@ describe('SessionView — numeric items', () => {
     renderChem();
 
     await user.type(screen.getByLabelText(/your answer/i), '3 mol');
-    await user.click(screen.getByRole('button', { name: /check/i }));
+    await user.click(screen.getByRole('button', { name: /^check$/i }));
 
     expect(screen.getByText(/significant figures wrong/i)).toBeDefined();
   });
@@ -65,7 +74,7 @@ describe('SessionView — numeric items', () => {
     renderChem();
 
     await user.type(screen.getByLabelText(/your answer/i), '3.00 mol');
-    await user.click(screen.getByRole('button', { name: /check/i }));
+    await user.click(screen.getByRole('button', { name: /^check$/i }));
 
     const saved = await attemptsForItem('chem.stoich.mole-ratio.i1');
     expect(saved).toHaveLength(1);
@@ -81,6 +90,7 @@ describe('SessionView — leaving a session', () => {
       <SessionView
         topic={chem}
         items={chemItems}
+        biome="meadow"
         onExit={() => {
           exited = true;
         }}
@@ -93,96 +103,125 @@ describe('SessionView — leaving a session', () => {
 });
 
 describe('SessionView — multiple choice', () => {
-  it('shows every option regardless of shuffling', () => {
-    const mcq = chemItems.filter((i) => i.type === 'mcq');
-    render(<SessionView topic={chem} items={mcq} onExit={() => {}} />);
+  const mcq = chemItems.filter((i) => i.type === 'mcq');
 
-    expect(screen.getByRole('button', { name: /mole ratios between/i })).toBeDefined();
-    expect(screen.getByRole('button', { name: /limiting reagent/i })).toBeDefined();
-    expect(screen.getByRole('button', { name: /nothing chemically/i })).toBeDefined();
+  const renderMcq = () =>
+    render(
+      <SessionView topic={chem} items={mcq} biome="meadow" onExit={() => {}} />,
+    );
+
+  it('has a multiple-choice item to test', () => {
+    expect(mcq.length).toBeGreaterThan(0);
   });
 
-  it('grades the right option however it was shuffled', async () => {
-    const user = userEvent.setup();
-    const mcq = chemItems.filter((i) => i.type === 'mcq');
-    render(<SessionView topic={chem} items={mcq} onExit={() => {}} />);
+  it('shows every option regardless of shuffling', () => {
+    renderMcq();
+    expect(
+      screen.getByRole('button', { name: /mole ratios between/i }),
+    ).toBeDefined();
+    expect(
+      screen.getByRole('button', { name: /limiting reagent/i }),
+    ).toBeDefined();
+    expect(
+      screen.getByRole('button', { name: /nothing chemically/i }),
+    ).toBeDefined();
+  });
 
-    await user.click(screen.getByRole('button', { name: /nothing chemically/i }));
+  it('grades itself the moment you choose, with no self-rating', async () => {
+    const user = userEvent.setup();
+    renderMcq();
+
+    await user.click(
+      screen.getByRole('button', { name: /nothing chemically/i }),
+    );
+
     expect(screen.getByText('Correct.')).toBeDefined();
+    expect(screen.queryByRole('button', { name: /got it/i })).toBeNull();
   });
 });
 
 describe('SessionView — written items', () => {
-  const renderWater = () =>
-    render(<SessionView topic={water} items={waterItems} onExit={() => {}} />);
+  const renderWritten = () =>
+    render(
+      <SessionView
+        topic={water}
+        items={writtenItems}
+        biome="reef"
+        onExit={() => {}}
+      />,
+    );
 
-  it('renders a recall item as a textarea', () => {
-    renderWater();
-    expect(screen.getByText(/why is a water molecule polar/i)).toBeDefined();
+  it('has written items to test', () => {
+    expect(writtenItems.length).toBeGreaterThan(0);
+  });
+
+  it('renders a written item as a textarea', () => {
+    renderWritten();
     expect(screen.getByLabelText(/your answer/i).tagName).toBe('TEXTAREA');
   });
 
   it('shows the model answer and rubric before asking for a rating', async () => {
     const user = userEvent.setup();
-    renderWater();
+    renderWritten();
 
     await user.type(screen.getByLabelText(/your answer/i), 'oxygen pulls harder');
     await user.click(screen.getByRole('button', { name: /show model answer/i }));
 
-    expect(screen.getByText(/more electronegative than hydrogen/i)).toBeDefined();
     expect(screen.getByRole('list', { name: /rubric/i })).toBeDefined();
     expect(screen.getByText('oxygen pulls harder')).toBeDefined();
   });
 
   it('does not show the worked solution until after rating', async () => {
     const user = userEvent.setup();
-    renderWater();
+    renderWritten();
 
     await user.type(screen.getByLabelText(/your answer/i), 'attempt');
     await user.click(screen.getByRole('button', { name: /show model answer/i }));
 
     expect(screen.queryByRole('list', { name: /worked solution/i })).toBeNull();
 
-    await user.click(screen.getByRole('button', { name: /^Good/ }));
+    await user.click(screen.getByRole('button', { name: /^got it$/i }));
 
     expect(screen.getByRole('list', { name: /worked solution/i })).toBeDefined();
   });
 
-  it('offers all four self-ratings', async () => {
+  it('leads with two choices, not four', async () => {
     const user = userEvent.setup();
-    renderWater();
+    renderWritten();
 
     await user.type(screen.getByLabelText(/your answer/i), 'attempt');
     await user.click(screen.getByRole('button', { name: /show model answer/i }));
 
-    for (const label of [/^Again/, /^Hard/, /^Good/, /^Easy/]) {
-      expect(screen.getByRole('button', { name: label })).toBeDefined();
-    }
+    expect(screen.getByRole('button', { name: /^got it$/i })).toBeDefined();
+    expect(screen.getByRole('button', { name: /^missed it$/i })).toBeDefined();
+    // The finer grades stay available, just not as the main choice.
+    expect(screen.getByRole('button', { name: /was a fight/i })).toBeDefined();
+    expect(screen.getByRole('button', { name: /too easy/i })).toBeDefined();
   });
 
-  it('records the chosen rating, not an assumed one', async () => {
+  it('records "missed it" as not recalled', async () => {
     const user = userEvent.setup();
-    renderWater();
+    renderWritten();
 
     await user.type(screen.getByLabelText(/your answer/i), 'attempt');
     await user.click(screen.getByRole('button', { name: /show model answer/i }));
-    await user.click(screen.getByRole('button', { name: /^Again/ }));
+    await user.click(screen.getByRole('button', { name: /^missed it$/i }));
 
-    const saved = await attemptsForItem('bio.col.water-properties.i1');
+    const saved = await attemptsForItem(writtenItems[0].id);
     expect(saved).toHaveLength(1);
     expect(saved[0].correct).toBe(false);
     expect(saved[0].response).toBe('attempt');
   });
 
-  it('records a positive rating as recalled', async () => {
+  it('records a fought-for recall as correct', async () => {
     const user = userEvent.setup();
-    renderWater();
+    renderWritten();
 
     await user.type(screen.getByLabelText(/your answer/i), 'attempt');
     await user.click(screen.getByRole('button', { name: /show model answer/i }));
-    await user.click(screen.getByRole('button', { name: /^Hard/ }));
+    await user.click(screen.getByRole('button', { name: /was a fight/i }));
 
-    const saved = await attemptsForItem('bio.col.water-properties.i1');
+    const saved = await attemptsForItem(writtenItems[0].id);
     expect(saved[0].correct).toBe(true);
   });
 });

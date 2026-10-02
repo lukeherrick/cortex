@@ -1,44 +1,58 @@
 import { useState } from 'react';
-import { itemsAtDepth, loadBundle, topicsForSubject } from '@/content';
+import {
+  itemsAtDepth,
+  loadBundle,
+  topicsForUnit,
+  unitForTopic,
+  unitsForSubject,
+} from '@/content';
 import type { Depth, Subject, Topic } from '@/content/types';
+import Home from '@/ui/Home';
 import SessionView from '@/ui/SessionView';
-import TopicList from '@/ui/TopicList';
 import '@/ui/styles.css';
 
 export const appName = 'Cortex';
 
-const DEPTH: Record<Subject, Depth> = { bio: 'level1', chem: 'honors' };
+/**
+ * Which depth each subject is studied at.
+ *
+ * Biology is AP-only: Level 1 Biology was dropped because the owner cannot take
+ * AP Biology at school, so there is no reason to learn a reduced version first.
+ */
+const DEPTH: Record<Subject, Depth> = { bio: 'ap', chem: 'honors' };
+
+const SUBJECTS: readonly Subject[] = ['bio', 'chem'];
 
 export default function App() {
   const bundle = loadBundle();
   const [active, setActive] = useState<Topic | null>(null);
 
   if (active) {
+    const unit = unitForTopic(bundle, active);
     return (
       <main>
         <SessionView
           key={active.id}
           topic={active}
           items={itemsAtDepth(active, DEPTH[active.subject])}
+          biome={unit?.biome ?? 'meadow'}
           onExit={() => setActive(null)}
         />
       </main>
     );
   }
 
+  const subjects = SUBJECTS.map((subject) => ({
+    subject,
+    units: unitsForSubject(bundle, subject).map((unit) => ({
+      unit,
+      topics: topicsForUnit(bundle, unit.id),
+    })),
+  }));
+
   return (
     <main>
-      <h1>{appName}</h1>
-      <TopicList
-        subject="bio"
-        topics={topicsForSubject(bundle, 'bio')}
-        onPick={setActive}
-      />
-      <TopicList
-        subject="chem"
-        topics={topicsForSubject(bundle, 'chem')}
-        onPick={setActive}
-      />
+      <Home subjects={subjects} onPick={setActive} />
     </main>
   );
 }

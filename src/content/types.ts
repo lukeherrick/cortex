@@ -1,5 +1,6 @@
 import type { z } from 'zod';
 import type {
+  biomeSchema,
   depthSchema,
   itemSchema,
   solutionStepSchema,
@@ -11,6 +12,7 @@ import type {
 } from './schema';
 
 export type Subject = z.infer<typeof subjectSchema>;
+export type Biome = z.infer<typeof biomeSchema>;
 export type Depth = z.infer<typeof depthSchema>;
 export type Tier = z.infer<typeof tierSchema>;
 export type Source = z.infer<typeof sourceSchema>;

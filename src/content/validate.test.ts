@@ -7,6 +7,7 @@ const unit: Unit = {
   subject: 'chem',
   title: 'Stoichiometry',
   order: 3,
+  biome: 'meadow',
 };
 
 function item(id: string, over: Record<string, unknown> = {}): Item {
@@ -89,6 +90,7 @@ describe('validateBundle', () => {
       subject: 'bio',
       title: 'Chemistry of Life',
       order: 1,
+      biome: 'reef',
     };
     const t = topic('a', {
       subject: 'bio',
@@ -97,6 +99,24 @@ describe('validateBundle', () => {
     });
     expect(validateBundle(bundle([t], [bioUnit])).join('\n')).toMatch(
       /depth "honors" is not valid for bio/i,
+    );
+  });
+
+  it('flags level1 depth on a biology topic, since bio is ap-only', () => {
+    const bioUnit: Unit = {
+      id: 'bio.unit-01',
+      subject: 'bio',
+      title: 'Chemistry of Life',
+      order: 1,
+      biome: 'reef',
+    };
+    const t = topic('a', {
+      subject: 'bio',
+      unit: 'bio.unit-01',
+      depth: 'level1',
+    });
+    expect(validateBundle(bundle([t], [bioUnit])).join('\n')).toMatch(
+      /depth "level1" is not valid for bio/i,
     );
   });
 

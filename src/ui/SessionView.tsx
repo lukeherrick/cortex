@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { Item, Topic } from '@/content/types';
+import type { Biome, Item, Topic } from '@/content/types';
 import { recordAttempt } from '@/data/attempts';
 import type { SelfRating } from '@/grading/freeResponse';
 import {
@@ -8,7 +8,10 @@ import {
   revealModelAnswer,
   startSession,
   submitAnswer,
+  type ItemResult,
 } from '@/session/machine';
+import { FlaskProgress } from '@/ui/art';
+import { BiomeMascot } from '@/ui/biomes';
 import ItemView from '@/ui/ItemView';
 import ModelAnswer from '@/ui/ModelAnswer';
 import SolutionView from '@/ui/SolutionView';
@@ -16,17 +19,39 @@ import SolutionView from '@/ui/SolutionView';
 interface Props {
   topic: Topic;
   items: readonly Item[];
+  /** The biome of the unit this topic belongs to; themes the session. */
+  biome: Biome;
   onExit: () => void;
 }
 
-const RATINGS: readonly { rating: SelfRating; label: string; hint: string }[] = [
-  { rating: 'again', label: 'Again', hint: "Didn't recall it" },
-  { rating: 'hard', label: 'Hard', hint: 'Recalled with effort' },
-  { rating: 'good', label: 'Good', hint: 'Recalled it' },
-  { rating: 'easy', label: 'Easy', hint: 'Instant' },
+/**
+ * Two big choices, two small ones.
+ *
+ * FSRS wants four grades, but four equal-weight buttons turn every written
+ * question into a decision, which reads as extra work and is the fastest way
+ * to make someone stop using a study app. So: the two answers you actually
+ * have are prominent, and the shades are optional.
+ */
+const PRIMARY: readonly { rating: SelfRating; label: string; cls: string }[] = [
+  { rating: 'again', label: 'Missed it', cls: 'missed' },
+  { rating: 'good', label: 'Got it', cls: 'got' },
 ];
 
-export default function SessionView({ topic, items, onExit }: Props) {
+const SECONDARY: readonly { rating: SelfRating; label: string }[] = [
+  { rating: 'hard', label: 'Got it, but it was a fight' },
+  { rating: 'easy', label: 'Too easy' },
+];
+
+function verdictClass(result: ItemResult): string {
+  if (result.correct) return 'verdict right pop';
+  // Right chemistry, wrong presentation — worth distinguishing from plain wrong.
+  if (/significant figures|wrong unit|no unit given/i.test(result.feedback)) {
+    return 'verdict close pop';
+  }
+  return 'verdict wrong pop';
+}
+
+export default function SessionView({ topic, items, biome, onExit }: Props) {
   const [state, setState] = useState(() => startSession(items));
 
   const commit = (response: string, rating?: SelfRating) => {
@@ -46,13 +71,20 @@ export default function SessionView({ topic, items, onExit }: Props) {
 
   if (state.phase === 'finished') {
     const right = state.results.filter((r) => r.correct).length;
+    const total = state.results.length;
     return (
-      <section>
-        <h2>Session complete</h2>
-        <p>
-          {right} of {state.results.length} correct.
+      <section className={`card done pop biome-${biome}`}>
+        <BiomeMascot biome={biome} size={76} />
+        <h2>Nice — that's the set</h2>
+        <p className="score">
+          {right}/{total}
         </p>
-        <button type="button" onClick={onExit}>
+        <p className="score-sub">
+          {right === total
+            ? 'Clean sweep.'
+            : 'The ones you missed are the ones worth coming back to.'}
+        </p>
+        <button type="button" className="primary" onClick={onExit}>
           Back to topics
         </button>
       </section>
@@ -62,17 +94,24 @@ export default function SessionView({ topic, items, onExit }: Props) {
   const item = state.items[state.index];
 
   return (
-    <section>
-      <header className="session-header">
-        <h2>{topic.title}</h2>
+    <section className={`card biome-${biome}`}>
+      <div className="session-header">
+        <div className="session-title">
+          <BiomeMascot biome={biome} size={38} />
+          <h2>{topic.title}</h2>
+        </div>
         <button type="button" className="quiet" onClick={onExit}>
           End session
         </button>
-      </header>
-      <p className="progress">
-        Question {state.index + 1} of {state.items.length}
-        {item.tier === 'ap' ? ' · AP level' : ''}
-      </p>
+      </div>
+
+      <div className="session-meta">
+        <FlaskProgress done={state.results.length} total={state.items.length} />
+        <p className="progress">
+          Question {state.index + 1} of {state.items.length}
+          {item.tier === 'ap' ? ' · AP level' : ''}
+        </p>
+      </div>
 
       {!item.verified && (
         <p className="unverified" role="status">
@@ -91,7 +130,7 @@ export default function SessionView({ topic, items, onExit }: Props) {
       )}
 
       {state.phase === 'selfGrading' && (
-        <div>
+        <div className="pop">
           {state.draft.trim() !== '' && (
             <section className="your-attempt">
               <h3>What you wrote</h3>
@@ -100,29 +139,52 @@ export default function SessionView({ topic, items, onExit }: Props) {
           )}
           <ModelAnswer item={item} />
           <fieldset className="ratings">
-            <legend>How well did you recall it?</legend>
-            <div className="choices">
-              {RATINGS.map(({ rating, label, hint }) => (
+            <legend>Did you get it?</legend>
+            <div className="rating-primary">
+              {PRIMARY.map(({ rating, label, cls }) => (
                 <button
                   key={rating}
                   type="button"
+                  className={cls}
                   onClick={() => commit(state.draft, rating)}
                 >
-                  {label} — {hint}
+                  {label}
                 </button>
               ))}
             </div>
+            <div className="rating-secondary">
+              {SECONDARY.map(({ rating, label }) => (
+                <button
+                  key={rating}
+                  type="button"
+                  className="quiet"
+                  onClick={() => commit(state.draft, rating)}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+            <p className="rating-hint">
+              Two taps is the normal path. The small ones just fine-tune how
+              soon this comes back.
+            </p>
           </fieldset>
         </div>
       )}
 
-      {state.phase === 'reviewing' && (
+      {state.phase === 'reviewing' && state.lastResult && (
         <div>
-          <p className="verdict">{state.lastResult?.feedback}</p>
+          <p className={verdictClass(state.lastResult)}>
+            {state.lastResult.feedback}
+          </p>
           {isWritten(item) && <ModelAnswer item={item} />}
           <SolutionView item={item} />
-          <button type="button" onClick={() => setState(advance(state))}>
-            Next
+          <button
+            type="button"
+            className="primary"
+            onClick={() => setState(advance(state))}
+          >
+            Next question
           </button>
         </div>
       )}

@@ -77,9 +77,16 @@ amount to "let me highlight the notes" are declined by design.
 | Stack | React + Vite + TypeScript | Fast to a working loop; the lab scene and session state need real state management. |
 | Persistence | IndexedDB via Dexie, behind repositories | No server, no account, no running cost, works offline. |
 | Scheduler | FSRS via `ts-fsrs` | Better-calibrated than SM-2, open-source, actively maintained. |
-| Courses in v1 | Two tracks: Biology (Level 1 → AP Bio) and Chemistry (Honors → AP Chem) | Bio is the owner's main interest and is unavailable at school; chem is the current graded class. Both matter. |
+| Courses in v1 | Two tracks: **Biology (AP only)** and Chemistry (Honors → AP Chem) | Bio is the owner's main interest and unavailable at school; chem is the current graded class. Both matter. |
+| Level 1 Biology | **Dropped** (revised 2026-10-01) | The owner cannot take AP Biology at school, so learning a reduced version first is wasted effort. The AP CED also fully defines the AP sequence, where a "Level 1" sequence would have to be invented. Validator rejects `depth: level1` on biology. |
+| Chemistry sequence | Standard US Honors Chemistry order; Santa Clara Unified as the reference district | Owner's note: local courses follow the same routine. Coverage must be **quiz-complete**, not illustrative — his teacher is on leave for Q2 and the long-term sub is not setting work, so this app is his actual practice. |
+| Content voice | Plain phrase first, technical term in parentheses — "how hard an atom pulls shared electrons (electronegativity)". Questions carry concrete scenarios and character. | Owner's explicit request. He flagged monotone AI-sounding questions as a reason not to engage. Accuracy still outranks simplicity. |
+| Visual design | **A functional requirement, not polish** | Owner: "the ui is bland wouldn't want to open on my own choice because of that." An app he avoids has zero effectiveness regardless of grading quality. "Looks boring" is triaged as a bug. |
+| Unit identity | **One biome per unit** — meadow, reef, rainforest, desert, tundra, volcano — each with a palette and a cartoon animal mascot | Owner's idea. Distinct places are easier to hold apart than identically-styled unit pages, and it gives the app the colour and life he asked for. |
+| Self-grading UX | Two large choices (**Missed it** / **Got it**), finer grades (hard / easy) kept as small secondary options | Owner found four equal buttons to be "extra work". Four equal-weight choices turn every written item into a decision, which is how people stop opening a study app. FSRS fidelity is preserved. |
+| Item mix | Prefer auto-graded types where the content allows | Owner likes that MCQ grades itself. Written items stay where free recall is genuinely the right instrument. |
 | Content order | **Alternating units** — Bio U1, Chem U1, Bio U2, Chem U2, … | Keeps both tracks usable early; neither subject stalls. Slower to full coverage in either one. |
-| Depth tagging | Bio: `level1` / `ap` / `both`. Chem: `honors` / `ap` / `both`. | Within a subject, the two levels share most topics; the AP layer is authored alongside and filtered until needed. |
+| Depth tagging | Bio: `ap` / `both`. Chem: `honors` / `ap` / `both`. | Chemistry's two levels share most topics, so the AP layer is authored alongside and filtered until needed. Biology has one level. |
 | Content source | Authored bank + optional AI top-up | Trustworthy core, infinite tail. Pure AI generation risks teaching false worked solutions in a grade-bearing class. |
 | Grading | Auto numeric (value/unit/sig-fig) + MCQ; self-graded FRQ | Chemistry is quantitative; sig-fig and unit errors are where points are actually lost. |
 | Environment | Scene-based study mode | Literal "dive in" without the cost and distraction of an explorable world. |
@@ -290,6 +297,22 @@ not a learning mode, and it deliberately does not write FSRS state.
 ---
 
 ## 5. The lab environment
+
+### Biomes
+
+Every unit declares a `biome` in its `_unit.md`: `meadow` · `reef` ·
+`rainforest` · `desert` · `tundra` · `volcano`. A biome supplies a `--biome` /
+`--biome-soft` colour pair (defined for light and dark) and a cartoon animal
+mascot, rendered as inline SVG so it inherits theme colours and a published
+build has no image requests that can fail.
+
+The biome themes that unit's card on the home screen and the session view for
+any topic inside it. Mascots must read at 38px and must never pull attention
+off the question.
+
+Assignments are chosen for fit, not rotation — `bio.unit-01` (Chemistry of
+Life, which is mostly water) is the reef; `chem.unit-03` (Stoichiometry, which
+is recipes and ratios) is the meadow with a bee.
 
 **Outside a session:** clean, bright dashboard — due count, streak, per-unit
 progress. Calm, not gamey.

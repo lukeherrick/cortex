@@ -63,9 +63,24 @@ export const topicSchema = z.object({
   items: z.array(itemSchema).min(1),
 });
 
+/**
+ * Each unit is set in a different biome. Distinct places are easier to hold
+ * apart than a uniform list of unit names, and it gives every unit its own
+ * identity in the UI.
+ */
+export const biomeSchema = z.enum([
+  'meadow',
+  'reef',
+  'rainforest',
+  'desert',
+  'tundra',
+  'volcano',
+]);
+
 export const unitSchema = z.object({
   id: z.string().min(1),
   subject: subjectSchema,
   title: z.string().min(1),
   order: z.number().int().nonnegative(),
+  biome: biomeSchema,
 });

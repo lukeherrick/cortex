@@ -1,6 +1,14 @@
 import generated from '../generated/content.json';
 import { topicSchema, unitSchema } from './schema';
-import type { ContentBundle, Depth, Item, Subject, Topic } from './types';
+import type {
+  Biome,
+  ContentBundle,
+  Depth,
+  Item,
+  Subject,
+  Topic,
+  Unit,
+} from './types';
 
 let cached: ContentBundle | null = null;
 
@@ -28,6 +36,26 @@ export function findTopic(
   return bundle.topics.find((t) => t.id === id);
 }
 
+/** Units of one subject, already ordered by the content build. */
+export function unitsForSubject(
+  bundle: ContentBundle,
+  subject: Subject,
+): Unit[] {
+  return bundle.units.filter((u) => u.subject === subject);
+}
+
+export function topicsForUnit(bundle: ContentBundle, unitId: string): Topic[] {
+  return bundle.topics.filter((t) => t.unit === unitId);
+}
+
+/** The unit a topic belongs to, or undefined if content is mid-edit. */
+export function unitForTopic(
+  bundle: ContentBundle,
+  topic: Topic,
+): Unit | undefined {
+  return bundle.units.find((u) => u.id === topic.unit);
+}
+
 /** Items visible at a given study depth. `both` is always visible. */
 export function itemsAtDepth(topic: Topic, depth: Depth): Item[] {
   if (depth === 'ap') {
@@ -36,4 +64,4 @@ export function itemsAtDepth(topic: Topic, depth: Depth): Item[] {
   return topic.items.filter((i) => i.depth === depth || i.depth === 'both');
 }
 
-export type { ContentBundle, Depth, Item, Subject, Topic };
+export type { Biome, ContentBundle, Depth, Item, Subject, Topic, Unit };

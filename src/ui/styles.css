@@ -1,33 +1,436 @@
+/* ---------------------------------------------------------------- tokens */
+
 :root {
   color-scheme: light dark;
-  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
-  line-height: 1.5;
+
+  --sun: #ffc542;
+  --sun-soft: #fff0cc;
+  --leaf: #2e9e5b;
+  --leaf-soft: #ddf3e5;
+  --flask: #3aa7d8;
+  --flask-soft: #dcf0fa;
+  --berry: #e0564a;
+  --berry-soft: #fde4e1;
+
+  --paper: #fffdf7;
+  --card: #ffffff;
+  --ink: #22251f;
+  --ink-soft: #5e6459;
+  --line: #e8e4d8;
+
+  --radius: 18px;
+  --radius-sm: 10px;
+  --shadow: 0 1px 2px rgb(34 37 31 / 6%), 0 8px 24px rgb(34 37 31 / 7%);
+  --shadow-lift: 0 2px 4px rgb(34 37 31 / 8%), 0 14px 32px rgb(34 37 31 / 12%);
+
+  --font: ui-rounded, 'Segoe UI Variable Display', 'Segoe UI', system-ui,
+    -apple-system, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --sun: #ffd166;
+    --sun-soft: #3a3121;
+    --leaf: #52c782;
+    --leaf-soft: #1e3a2a;
+    --flask: #63c2ea;
+    --flask-soft: #1b3440;
+    --berry: #ff7d70;
+    --berry-soft: #3d2320;
+
+    --paper: #15171a;
+    --card: #1e2126;
+    --ink: #f2f1ea;
+    --ink-soft: #a8ada3;
+    --line: #2f343b;
+
+    --shadow: 0 1px 2px rgb(0 0 0 / 30%), 0 8px 24px rgb(0 0 0 / 35%);
+    --shadow-lift: 0 2px 4px rgb(0 0 0 / 35%), 0 14px 32px rgb(0 0 0 / 45%);
+  }
+}
+
+/* ------------------------------------------------------------------ base */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font);
+  line-height: 1.55;
+  margin: 0;
 }
 
 main {
   margin: 0 auto;
-  max-width: 42rem;
-  padding: 1.5rem 1rem 4rem;
+  max-width: 44rem;
+  padding: 1.25rem 1.1rem 5rem;
 }
 
+h1,
+h2,
+h3,
+h4 {
+  line-height: 1.2;
+  margin: 0 0 0.5rem;
+}
+
+h1 {
+  font-size: clamp(2rem, 7vw, 2.9rem);
+  letter-spacing: -0.02em;
+}
+
+p {
+  margin: 0 0 0.75rem;
+}
+
+/* --------------------------------------------------------------- buttons */
+
 button {
+  background: var(--card);
+  border: 2px solid var(--line);
+  border-radius: var(--radius-sm);
+  color: inherit;
   cursor: pointer;
   font: inherit;
-  padding: 0.5rem 0.9rem;
+  font-weight: 600;
+  padding: 0.6rem 1rem;
+  text-align: left;
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease,
+    border-color 120ms ease,
+    background 120ms ease;
+}
+
+button:hover {
+  border-color: var(--flask);
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(0) scale(0.99);
+}
+
+button:focus-visible {
+  outline: 3px solid var(--flask);
+  outline-offset: 2px;
+}
+
+button.primary {
+  background: var(--leaf);
+  border-color: var(--leaf);
+  color: #fff;
+  text-align: center;
+}
+
+button.primary:hover {
+  filter: brightness(1.07);
+}
+
+button.quiet {
+  background: none;
+  border-color: transparent;
+  color: var(--ink-soft);
+  font-weight: 500;
+  padding: 0.35rem 0.5rem;
+}
+
+button.quiet:hover {
+  color: var(--ink);
+  transform: none;
+}
+
+/* ------------------------------------------------------------------ home */
+
+.hero {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+  margin: 0.5rem 0 1.75rem;
+}
+
+.hero-art {
+  flex: 0 0 auto;
+}
+
+.tagline {
+  color: var(--ink-soft);
+  font-size: 1.05rem;
+  margin: 0;
+}
+
+.wordmark {
+  margin: 0;
+}
+
+/* --------------------------------------------------------------- biomes */
+
+/*
+ * One biome per unit. --biome is the strong colour, --biome-soft the wash
+ * behind the unit header. Each pair is contrast-checked against --ink in both
+ * themes, so text stays readable on the wash.
+ */
+
+.biome-meadow {
+  --biome: #5aa832;
+  --biome-soft: #e9f6dc;
+}
+
+.biome-reef {
+  --biome: #2f9fbe;
+  --biome-soft: #dcf1f7;
+}
+
+.biome-rainforest {
+  --biome: #1f8f6a;
+  --biome-soft: #d9f2e8;
+}
+
+.biome-desert {
+  --biome: #d1912c;
+  --biome-soft: #fbeed5;
+}
+
+.biome-tundra {
+  --biome: #5b7fa6;
+  --biome-soft: #e4ecf5;
+}
+
+.biome-volcano {
+  --biome: #cf5438;
+  --biome-soft: #fbe3dd;
+}
+
+@media (prefers-color-scheme: dark) {
+  .biome-meadow {
+    --biome: #87cf5c;
+    --biome-soft: #1f2e18;
+  }
+
+  .biome-reef {
+    --biome: #5cc4e0;
+    --biome-soft: #13303a;
+  }
+
+  .biome-rainforest {
+    --biome: #4ec79b;
+    --biome-soft: #12302a;
+  }
+
+  .biome-desert {
+    --biome: #edb354;
+    --biome-soft: #332715;
+  }
+
+  .biome-tundra {
+    --biome: #8fb0d4;
+    --biome-soft: #1b2733;
+  }
+
+  .biome-volcano {
+    --biome: #f0836a;
+    --biome-soft: #341913;
+  }
+}
+
+.mascot {
+  flex: 0 0 auto;
+}
+
+/* ------------------------------------------------------------- home list */
+
+.subject {
+  margin-bottom: 2.25rem;
+}
+
+.subject-head {
+  margin-bottom: 0.9rem;
+}
+
+.subject-head h2 {
+  margin: 0;
+}
+
+.subject-head .sub {
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+  margin: 0;
+}
+
+.unit {
+  background: var(--card);
+  border: 2px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.unit-head {
+  align-items: center;
+  background: var(--biome-soft);
+  border-bottom: 2px solid var(--line);
+  display: flex;
+  gap: 0.8rem;
+  padding: 0.85rem 1.1rem;
+}
+
+.unit-head h3 {
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+.unit-biome {
+  color: var(--biome);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.unit .topics button:hover {
+  border-color: var(--biome);
+}
+
+.unit .chip {
+  background: var(--biome-soft);
+  color: var(--biome);
+}
+
+.topics {
+  display: grid;
+  gap: 0.6rem;
+  list-style: none;
+  margin: 0;
+  padding: 1rem 1.2rem 1.3rem;
+}
+
+.topics button {
+  align-items: center;
+  display: flex;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.topic-title {
+  flex: 1 1 auto;
+}
+
+.chip {
+  background: var(--sun-soft);
+  border-radius: 999px;
+  color: var(--ink-soft);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 0.15rem 0.55rem;
+  white-space: nowrap;
+}
+
+.empty {
+  color: var(--ink-soft);
+  font-style: italic;
+  padding: 0 1.2rem 1.3rem;
+}
+
+/* --------------------------------------------------------------- session */
+
+.card {
+  background: var(--card);
+  border: 2px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lift);
+  padding: 1.25rem 1.3rem 1.4rem;
+}
+
+.session-header {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.session-title {
+  align-items: center;
+  display: flex;
+  gap: 0.6rem;
+}
+
+.session-header h2 {
+  margin: 0;
+}
+
+.card.biome-meadow,
+.card.biome-reef,
+.card.biome-rainforest,
+.card.biome-desert,
+.card.biome-tundra,
+.card.biome-volcano {
+  border-top: 8px solid var(--biome);
+}
+
+.card button.primary {
+  background: var(--biome, var(--leaf));
+  border-color: var(--biome, var(--leaf));
+}
+
+.session-meta {
+  align-items: center;
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.1rem;
+}
+
+.progress {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.prompt {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+label {
+  color: var(--ink-soft);
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.3rem;
+  text-transform: uppercase;
 }
 
 input,
 textarea {
+  background: var(--paper);
+  border: 2px solid var(--line);
+  border-radius: var(--radius-sm);
+  color: inherit;
   display: block;
   font: inherit;
-  margin: 0.35rem 0 0.75rem;
+  margin-bottom: 0.9rem;
   max-width: 100%;
-  padding: 0.5rem;
-  width: 20rem;
+  padding: 0.65rem 0.75rem;
+  width: 100%;
+}
+
+input:focus,
+textarea:focus {
+  border-color: var(--flask);
+  outline: none;
 }
 
 textarea {
   min-height: 7rem;
+  resize: vertical;
 }
 
 fieldset {
@@ -36,73 +439,185 @@ fieldset {
   padding: 0;
 }
 
-.choices {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.4rem;
-  margin-top: 0.75rem;
-}
-
-.progress {
-  opacity: 0.7;
-}
-
-.verdict {
-  font-weight: 600;
-}
-
-.topics {
-  list-style: none;
+legend {
   padding: 0;
 }
 
-.unverified {
-  border-left: 3px solid #c08000;
-  font-size: 0.9rem;
-  padding-left: 0.7rem;
+.choices {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 0.9rem;
 }
 
-.your-attempt p {
-  border-left: 3px solid currentColor;
-  margin-left: 0;
-  opacity: 0.75;
-  padding-left: 0.7rem;
-  white-space: pre-wrap;
+/* ------------------------------------------------------------- verdicts */
+
+.verdict {
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  margin-bottom: 1rem;
+  padding: 0.8rem 0.95rem;
+}
+
+.verdict.right {
+  background: var(--leaf-soft);
+  border-left: 5px solid var(--leaf);
+}
+
+.verdict.close {
+  background: var(--sun-soft);
+  border-left: 5px solid var(--sun);
+}
+
+.verdict.wrong {
+  background: var(--berry-soft);
+  border-left: 5px solid var(--berry);
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.pop {
+  animation: pop-in 180ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  button:hover {
+    transform: none;
+  }
+}
+
+/* ------------------------------------------------- solution / rubric */
+
+.solution,
+.model-answer,
+.your-attempt {
+  margin-bottom: 1.1rem;
+}
+
+.solution h3,
+.model-answer h3,
+.your-attempt h3 {
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.solution ol {
+  margin: 0;
+  padding-left: 1.3rem;
+}
+
+.solution li,
+.model-answer li {
+  margin-bottom: 0.45rem;
 }
 
 .model-answer h4 {
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
   margin-bottom: 0.3rem;
+  text-transform: uppercase;
 }
+
+.your-attempt p {
+  background: var(--paper);
+  border-left: 4px solid var(--line);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  color: var(--ink-soft);
+  margin: 0;
+  padding: 0.6rem 0.8rem;
+  white-space: pre-wrap;
+}
+
+.unverified {
+  background: var(--sun-soft);
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  padding: 0.6rem 0.8rem;
+}
+
+/* --------------------------------------------------------------- ratings */
 
 .ratings {
   margin-top: 1.25rem;
 }
 
 .ratings legend {
-  font-weight: 600;
+  font-weight: 700;
+  margin-bottom: 0.6rem;
 }
 
-.session-header {
-  align-items: baseline;
+.rating-primary {
+  display: grid;
+  gap: 0.6rem;
+  grid-template-columns: 1fr 1fr;
+}
+
+.rating-primary button {
+  font-size: 1.05rem;
+  padding: 0.9rem 1rem;
+  text-align: center;
+}
+
+.rating-primary .got {
+  background: var(--leaf);
+  border-color: var(--leaf);
+  color: #fff;
+}
+
+.rating-primary .missed {
+  background: var(--berry);
+  border-color: var(--berry);
+  color: #fff;
+}
+
+.rating-secondary {
   display: flex;
-  gap: 1rem;
-  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 0.6rem;
 }
 
-button.quiet {
-  background: none;
-  border: 0;
-  opacity: 0.6;
-  padding: 0.25rem;
-  text-decoration: underline;
+.rating-secondary button {
+  font-size: 0.85rem;
+  padding: 0.4rem 0.7rem;
 }
 
-button.quiet:hover {
-  opacity: 1;
+.rating-hint {
+  color: var(--ink-soft);
+  font-size: 0.82rem;
+  margin: 0.6rem 0 0;
 }
 
-ol li,
-ul li {
-  margin-bottom: 0.4rem;
+/* ----------------------------------------------------------- completion */
+
+.done {
+  text-align: center;
+}
+
+.done .score {
+  font-size: 2.4rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0.5rem 0 0.25rem;
+}
+
+.done .score-sub {
+  color: var(--ink-soft);
+  margin-bottom: 1.4rem;
 }

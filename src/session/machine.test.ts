@@ -13,7 +13,7 @@ const chem = findTopic(bundle, 'chem.stoich.mole-ratio')!;
 const items = itemsAtDepth(chem, 'honors');
 
 const water = findTopic(bundle, 'bio.col.water-properties')!;
-const written = itemsAtDepth(water, 'level1').filter(isWritten);
+const written = itemsAtDepth(water, 'ap').filter(isWritten);
 
 describe('session machine — auto-graded items', () => {
   it('starts on the first item, answering', () => {
@@ -131,7 +131,7 @@ describe('session machine — written items', () => {
 });
 
 describe('session machine — mixed session', () => {
-  const mixed = itemsAtDepth(water, 'level1');
+  const mixed = itemsAtDepth(water, 'ap');
 
   it('finishes after the last item', () => {
     let state = startSession(mixed);
