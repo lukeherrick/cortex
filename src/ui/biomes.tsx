@@ -121,6 +121,50 @@ function Salamander() {
   );
 }
 
+function Bat() {
+  return (
+    <g>
+      <path
+        d="M32 28q-6-10-16-11 3 5 1 9 5 1 7 6-7-2-12 2 8 2 11 8 4-5 9-5Z"
+        fill="#6b5b8c"
+      />
+      <path
+        d="M32 28q6-10 16-11-3 5-1 9-5 1-7 6 7-2 12 2-8 2-11 8-4-5-9-5Z"
+        fill="#6b5b8c"
+      />
+      <ellipse cx="32" cy="36" rx="8" ry="10" fill="#4c4066" />
+      <path d="M26 24l-2-7 6 4ZM38 24l2-7-6 4Z" fill="#4c4066" />
+      <circle cx="29" cy="32" r="2" fill="#f5c542" />
+      <circle cx="35" cy="32" r="2" fill="#f5c542" />
+      <path d="M30 39q2 2 4 0" stroke="#fff" strokeWidth="1.6" fill="none" strokeLinecap="round" />
+    </g>
+  );
+}
+
+function Meerkat() {
+  return (
+    <g>
+      <ellipse cx="32" cy="42" rx="9" ry="14" fill="#c9a06a" />
+      <ellipse cx="32" cy="46" rx="5.5" ry="9" fill="#e5cba3" />
+      <circle cx="32" cy="22" r="9" fill="#c9a06a" />
+      <ellipse cx="24" cy="17" rx="4" ry="3.5" fill="#8e6c42" />
+      <ellipse cx="40" cy="17" rx="4" ry="3.5" fill="#8e6c42" />
+      <ellipse cx="28" cy="21" rx="3" ry="3.5" fill="#4a3b28" />
+      <ellipse cx="36" cy="21" rx="3" ry="3.5" fill="#4a3b28" />
+      <circle cx="29" cy="20" r="1" fill="#fff" />
+      <circle cx="37" cy="20" r="1" fill="#fff" />
+      <ellipse cx="32" cy="27" rx="2.2" ry="1.6" fill="#4a3b28" />
+      <path
+        d="M41 50q8 2 7 -10"
+        stroke="#c9a06a"
+        strokeWidth="4"
+        strokeLinecap="round"
+        fill="none"
+      />
+    </g>
+  );
+}
+
 const MASCOTS: Record<Biome, { draw: () => JSX.Element; alt: string }> = {
   meadow: { draw: Bee, alt: 'A bee' },
   reef: { draw: Pufferfish, alt: 'A pufferfish' },
@@ -128,6 +172,8 @@ const MASCOTS: Record<Biome, { draw: () => JSX.Element; alt: string }> = {
   desert: { draw: Lizard, alt: 'A lizard' },
   tundra: { draw: Penguin, alt: 'A penguin' },
   volcano: { draw: Salamander, alt: 'A fire salamander' },
+  cave: { draw: Bat, alt: 'A bat' },
+  savanna: { draw: Meerkat, alt: 'A meerkat' },
 };
 
 export const BIOME_LABEL: Record<Biome, string> = {
@@ -137,6 +183,8 @@ export const BIOME_LABEL: Record<Biome, string> = {
   desert: 'Desert',
   tundra: 'Tundra',
   volcano: 'Volcano',
+  cave: 'Cave',
+  savanna: 'Savanna',
 };
 
 export function BiomeMascot({

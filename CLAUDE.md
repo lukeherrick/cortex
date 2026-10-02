@@ -95,6 +95,17 @@ validator fails an `openstax` item that has no `attribution` field.
 Every item declares `source`: `original` / `openstax` / `ai-generated`.
 AI-generated items ship `verified: false` and render with a visible warning.
 
+### Unit ids are slugs, not numbers
+
+`chem.u-stoichiometry`, not `chem.unit-08`. Sequence lives in the `order`
+field, so inserting or resequencing a unit never churns ids. Directory names
+carry the number purely for human sorting (`content/chem/08-stoichiometry/`)
+and the build ignores them.
+
+All 22 units of both courses exist as `_unit.md` stubs with biomes assigned.
+Empty units render as "content on the way", which makes the roadmap visible in
+the app. Add topics into them; do not create new unit files for existing units.
+
 ### Item ids are a stable contract
 
 Review history is keyed to `id`. Renaming an id orphans his progress for that

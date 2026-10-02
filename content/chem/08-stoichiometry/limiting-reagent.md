@@ -1,6 +1,6 @@
----
+﻿---
 id: chem.stoich.limiting-reagent
-unit: chem.unit-03
+unit: chem.u-stoichiometry
 subject: chem
 title: Limiting Reagent
 depth: both
