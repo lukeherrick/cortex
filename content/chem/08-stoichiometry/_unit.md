@@ -1,7 +1,7 @@
----
-id: chem.unit-03
+﻿---
+id: chem.u-stoichiometry
 subject: chem
 title: Stoichiometry
-order: 3
+order: 8
 biome: meadow
 ---

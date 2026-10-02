@@ -75,6 +75,8 @@ export const biomeSchema = z.enum([
   'desert',
   'tundra',
   'volcano',
+  'cave',
+  'savanna',
 ]);
 
 export const unitSchema = z.object({

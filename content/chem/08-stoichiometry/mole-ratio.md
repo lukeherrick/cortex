@@ -1,12 +1,13 @@
----
+﻿---
 id: chem.stoich.mole-ratio
-unit: chem.unit-03
+unit: chem.u-stoichiometry
 subject: chem
 title: Mole Ratios
 depth: both
 ced:
   - SPQ-4.1
-prereqs: []
+prereqs:
+  - chem.mole.mole-conversions
 items:
   - id: chem.stoich.mole-ratio.i1
     tier: warmup

@@ -204,6 +204,16 @@ button.quiet:hover {
   --biome-soft: #fbe3dd;
 }
 
+.biome-cave {
+  --biome: #7a62a8;
+  --biome-soft: #ece6f6;
+}
+
+.biome-savanna {
+  --biome: #b08445;
+  --biome-soft: #f7edda;
+}
+
 @media (prefers-color-scheme: dark) {
   .biome-meadow {
     --biome: #87cf5c;
@@ -233,6 +243,16 @@ button.quiet:hover {
   .biome-volcano {
     --biome: #f0836a;
     --biome-soft: #341913;
+  }
+
+  .biome-cave {
+    --biome: #ab93d8;
+    --biome-soft: #241d33;
+  }
+
+  .biome-savanna {
+    --biome: #d8ab6b;
+    --biome-soft: #2e2516;
   }
 }
 

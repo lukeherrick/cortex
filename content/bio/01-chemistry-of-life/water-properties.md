@@ -1,6 +1,6 @@
----
+﻿---
 id: bio.col.water-properties
-unit: bio.unit-01
+unit: bio.u-chemistry-of-life
 subject: bio
 title: Properties of Water
 depth: both
@@ -222,5 +222,5 @@ That collective stickiness is where everything below comes from:
 
 Hold onto the chain of causes, because exams test it directly:
 
-> unequal pull (electronegativity) → lopsided molecule (polar) → weak links
-> (hydrogen bonding) → every property above
+> unequal pull (electronegativity) â†’ lopsided molecule (polar) â†’ weak links
+> (hydrogen bonding) â†’ every property above
