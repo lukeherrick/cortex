@@ -73,6 +73,45 @@ describe('SessionView — numeric items', () => {
   });
 });
 
+describe('SessionView — leaving a session', () => {
+  it('can be exited mid-session without finishing it', async () => {
+    const user = userEvent.setup();
+    let exited = false;
+    render(
+      <SessionView
+        topic={chem}
+        items={chemItems}
+        onExit={() => {
+          exited = true;
+        }}
+      />,
+    );
+
+    await user.click(screen.getByRole('button', { name: /end session/i }));
+    expect(exited).toBe(true);
+  });
+});
+
+describe('SessionView — multiple choice', () => {
+  it('shows every option regardless of shuffling', () => {
+    const mcq = chemItems.filter((i) => i.type === 'mcq');
+    render(<SessionView topic={chem} items={mcq} onExit={() => {}} />);
+
+    expect(screen.getByRole('button', { name: /mole ratios between/i })).toBeDefined();
+    expect(screen.getByRole('button', { name: /limiting reagent/i })).toBeDefined();
+    expect(screen.getByRole('button', { name: /nothing chemically/i })).toBeDefined();
+  });
+
+  it('grades the right option however it was shuffled', async () => {
+    const user = userEvent.setup();
+    const mcq = chemItems.filter((i) => i.type === 'mcq');
+    render(<SessionView topic={chem} items={mcq} onExit={() => {}} />);
+
+    await user.click(screen.getByRole('button', { name: /nothing chemically/i }));
+    expect(screen.getByText('Correct.')).toBeDefined();
+  });
+});
+
 describe('SessionView — written items', () => {
   const renderWater = () =>
     render(<SessionView topic={water} items={waterItems} onExit={() => {}} />);

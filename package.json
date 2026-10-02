@@ -7,8 +7,8 @@
     "dev": "npm run content && vite",
     "build": "npm run content && tsc -b && vite build",
     "content": "tsx scripts/build-content.ts",
-    "test": "vitest run",
-    "test:watch": "vitest"
+    "test": "npm run content && vitest run",
+    "test:watch": "npm run content && vitest"
   },
   "dependencies": {
     "dexie": "^4.0.8",

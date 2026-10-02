@@ -83,6 +83,25 @@ fieldset {
   font-weight: 600;
 }
 
+.session-header {
+  align-items: baseline;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+button.quiet {
+  background: none;
+  border: 0;
+  opacity: 0.6;
+  padding: 0.25rem;
+  text-decoration: underline;
+}
+
+button.quiet:hover {
+  opacity: 1;
+}
+
 ol li,
 ul li {
   margin-bottom: 0.4rem;

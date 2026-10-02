@@ -63,7 +63,12 @@ export default function SessionView({ topic, items, onExit }: Props) {
 
   return (
     <section>
-      <h2>{topic.title}</h2>
+      <header className="session-header">
+        <h2>{topic.title}</h2>
+        <button type="button" className="quiet" onClick={onExit}>
+          End session
+        </button>
+      </header>
       <p className="progress">
         Question {state.index + 1} of {state.items.length}
         {item.tier === 'ap' ? ' · AP level' : ''}

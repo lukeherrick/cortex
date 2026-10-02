@@ -1,4 +1,5 @@
 import { db, type AttemptRecord } from '@/data/db';
+import { newId } from '@/data/id';
 
 export type { AttemptRecord };
 
@@ -24,7 +25,7 @@ export async function recordAttempt(
 ): Promise<AttemptRecord> {
   const record: AttemptRecord = {
     ...input,
-    id: crypto.randomUUID(),
+    id: newId(),
     updatedAt: nextStamp(),
   };
   await db.attempts.add(record);

@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { Item } from '@/content/types';
+import { shuffle } from '@/ui/shuffle';
 
 interface Props {
   item: Item;
@@ -12,12 +13,17 @@ interface Props {
 export default function ItemView({ item, onSubmit, onReveal }: Props) {
   const [text, setText] = useState('');
 
+  const options = useMemo(
+    () => (item.type === 'mcq' ? shuffle(item.answer.options) : []),
+    [item],
+  );
+
   if (item.type === 'mcq') {
     return (
       <fieldset>
         <legend>{item.prompt}</legend>
         <div className="choices">
-          {item.answer.options.map((option) => (
+          {options.map((option) => (
             <button
               key={option.id}
               type="button"

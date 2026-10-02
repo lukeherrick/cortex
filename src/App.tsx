@@ -17,6 +17,7 @@ export default function App() {
     return (
       <main>
         <SessionView
+          key={active.id}
           topic={active}
           items={itemsAtDepth(active, DEPTH[active.subject])}
           onExit={() => setActive(null)}
