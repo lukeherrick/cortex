@@ -76,6 +76,26 @@ Each topic carries a problem ladder — **warm-up → standard → challenge →
 AP-exam grade** — every problem with a step-by-step worked explanation, not
 just an answer key.
 
+Content is written in **alternating units** — Bio Unit 1, Chem Unit 1, Bio
+Unit 2, and so on — so both subjects stay usable while neither is finished.
+
+**The biology track carries more weight.** AP Biology isn't available in the
+owner's school schedule, so there the app isn't a supplement to a class —
+it *is* the class. Biology topics are written to teach from scratch;
+chemistry topics may assume a teacher covered it.
+
+---
+
+## Running it on a phone
+
+No Mac, no Xcode, no Apple Developer account, no App Store. Cortex is a PWA:
+deploy to any static HTTPS host, open the URL in Safari on iOS, then
+Share → **Add to Home Screen**. It gets an icon, runs fullscreen, works
+offline.
+
+Progress is stored on the device. One-tap JSON export is the backup until
+cross-device sync exists.
+
 ---
 
 ## Development environment
