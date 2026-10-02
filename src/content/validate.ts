@@ -69,6 +69,35 @@ export function validateBundle(bundle: ContentBundle): string[] {
           `Item ${item.id}: source is openstax but attribution is missing`,
         );
       }
+
+      if (item.type === 'mcq') {
+        const ids = item.answer.options.map((o) => o.id);
+
+        // A correctId matching no option makes the item unanswerable: every
+        // choice grades as wrong and the learner can never move past it.
+        if (!ids.includes(item.answer.correctId)) {
+          errors.push(
+            `Item ${item.id}: correctId "${item.answer.correctId}" matches no option (have: ${ids.join(', ')})`,
+          );
+        }
+
+        const duplicates = ids.filter((id, i) => ids.indexOf(id) !== i);
+        if (duplicates.length > 0) {
+          errors.push(
+            `Item ${item.id}: duplicate option ids: ${[...new Set(duplicates)].join(', ')}`,
+          );
+        }
+
+        // Every wrong option must explain its own misconception. "Incorrect"
+        // teaches nothing, and the explanation is the whole value of an MCQ.
+        for (const option of item.answer.options) {
+          if (option.id !== item.answer.correctId && !option.why) {
+            errors.push(
+              `Item ${item.id}: distractor "${option.id}" has no "why" explanation`,
+            );
+          }
+        }
+      }
     }
   }
 
