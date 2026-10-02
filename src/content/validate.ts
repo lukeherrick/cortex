@@ -1,7 +1,12 @@
 import type { ContentBundle, Depth, Subject, Topic } from './types';
 
+/**
+ * Biology is AP-only. Level 1 Biology was dropped deliberately: the owner
+ * cannot take AP Biology at school, so learning a reduced version first would
+ * be wasted effort. `level1` is therefore rejected on biology content.
+ */
 const ALLOWED_DEPTHS: Record<Subject, readonly Depth[]> = {
-  bio: ['level1', 'ap', 'both'],
+  bio: ['ap', 'both'],
   chem: ['honors', 'ap', 'both'],
 };
 
