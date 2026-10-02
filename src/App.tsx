@@ -7,6 +7,7 @@ import {
   unitsForSubject,
 } from '@/content';
 import type { Depth, Subject, Topic } from '@/content/types';
+import Backdrop from '@/ui/Backdrop';
 import Home from '@/ui/Home';
 import SessionView from '@/ui/SessionView';
 import '@/ui/styles.css';
@@ -30,15 +31,18 @@ export default function App() {
   if (active) {
     const unit = unitForTopic(bundle, active);
     return (
-      <main>
-        <SessionView
-          key={active.id}
-          topic={active}
-          items={itemsAtDepth(active, DEPTH[active.subject])}
-          biome={unit?.biome ?? 'meadow'}
-          onExit={() => setActive(null)}
-        />
-      </main>
+      <>
+        <Backdrop />
+        <main>
+          <SessionView
+            key={active.id}
+            topic={active}
+            items={itemsAtDepth(active, DEPTH[active.subject])}
+            biome={unit?.biome ?? 'meadow'}
+            onExit={() => setActive(null)}
+          />
+        </main>
+      </>
     );
   }
 
@@ -51,8 +55,11 @@ export default function App() {
   }));
 
   return (
-    <main>
-      <Home subjects={subjects} onPick={setActive} />
-    </main>
+    <>
+      <Backdrop />
+      <main>
+        <Home subjects={subjects} onPick={setActive} />
+      </main>
+    </>
   );
 }

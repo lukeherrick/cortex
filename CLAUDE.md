@@ -188,6 +188,19 @@ them.
 Vitest runs **without `globals`**, so Testing Library's auto-cleanup does not
 register — component test files must call `afterEach(cleanup)` themselves.
 
+**`src/content/integrity.test.ts` runs over the real shipped content**, not
+fixtures. It asserts every numeric item accepts its own authored answer written
+to its authored sig figs, every MCQ grades its own `correctId` as correct and
+explains every distractor, every written item has a model answer and rubric,
+every item has real worked steps, and every topic body is long enough to teach.
+
+**But no test can tell you whether the chemistry is true.** Three content bugs
+have shipped and been caught only by rechecking arithmetic by hand — a
+corrupted prompt, invented masses that did not resolve to a whole-number
+formula, and two mis-rounded answers. **Recompute every numeric answer and
+every worked step by hand before committing content.** Treat this as a required
+step, not diligence.
+
 ---
 
 ## Process

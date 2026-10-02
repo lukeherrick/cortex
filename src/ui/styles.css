@@ -67,6 +67,101 @@ main {
   margin: 0 auto;
   max-width: 44rem;
   padding: 1.25rem 1.1rem 5rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* ------------------------------------------------------------- backdrop */
+
+/*
+ * Faded cartoon landscape. Deliberately low contrast — it must never compete
+ * with question text. Fixed so it does not scroll, and inert to pointers.
+ */
+.backdrop {
+  bottom: 0;
+  left: 0;
+  overflow: hidden;
+  pointer-events: none;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 0;
+}
+
+.backdrop svg {
+  height: 100%;
+  width: 100%;
+}
+
+.bd-sun {
+  fill: var(--sun);
+  opacity: 0.4;
+}
+
+.bd-sun-halo {
+  fill: var(--sun);
+  opacity: 0.14;
+}
+
+.bd-cloud ellipse {
+  fill: var(--card);
+  opacity: 0.75;
+}
+
+.bd-mol circle {
+  fill: var(--flask);
+  opacity: 0.22;
+}
+
+.bd-mol path {
+  stroke: var(--flask);
+  stroke-width: 4;
+  opacity: 0.22;
+}
+
+.bd-bubble circle {
+  fill: var(--flask);
+  opacity: 0.25;
+}
+
+.bd-hill-far {
+  fill: var(--leaf);
+  opacity: 0.16;
+}
+
+.bd-hill-near {
+  fill: var(--leaf);
+  opacity: 0.26;
+}
+
+.bd-tuft path {
+  fill: none;
+  stroke: var(--leaf);
+  stroke-linecap: round;
+  stroke-width: 3;
+  opacity: 0.35;
+}
+
+@media (prefers-color-scheme: dark) {
+  .bd-sun {
+    opacity: 0.22;
+  }
+
+  .bd-sun-halo {
+    opacity: 0.08;
+  }
+
+  .bd-cloud ellipse {
+    opacity: 0.3;
+  }
+
+  .bd-hill-far {
+    opacity: 0.2;
+  }
+
+  .bd-hill-near {
+    opacity: 0.3;
+  }
 }
 
 h1,
