@@ -204,8 +204,8 @@ Dexie over IndexedDB. Tables:
 | `cards` | FSRS state per item — stability, difficulty, due date, lapses |
 | `attempts` | Every answer ever given; drives accuracy trends |
 | `sessions` | Start/end, mode, items seen, summary |
-| `habits` | User-defined habit definitions |
-| `habitEntries` | Per-day ticks |
+| `habits` | Definitions — name, `kind` (check/count/value), target, unit, `slot`, `tier`, repeat days, archived flag |
+| `habitEntries` | Per-day log — habit id, date, value, completed flag |
 | `settings` | Course filter, depth, daily cap, reduced motion, API key |
 
 Every record carries `id` and `updatedAt`. All access goes through repository
@@ -324,8 +324,63 @@ uncluttered. Legibility of the problem text outranks every decorative concern.
 Opening the app does not count. A streak that is trivially easy to maintain
 carries no information and no motivation.
 
-**Manual grid:** user-defined habits (gym, sleep, reading), one tap per day,
-rendered as a simple calendar grid. Deliberately minimal.
+### Habit tracker
+
+Daily-repeating health and hygiene habits, user-editable, with three input
+kinds:
+
+| Kind | Logging | Example |
+|---|---|---|
+| `check` | One tap | Wash face, stretch |
+| `count` | Increment toward a target; progress ring | Water — 3.0 L, `+250 ml` per tap |
+| `value` | Enter a number once | Sleep — 8 h · Steps — 10,000 |
+
+**Slots.** Every habit carries `morning` · `night` · `anytime` ·
+`on-study-start`. The dashboard surfaces the slot matching the current time of
+day rather than one undifferentiated list. `on-study-start` habits render as a
+single tap on the session start screen, before the first item.
+
+**Repeat.** Daily by default; optionally a weekday subset.
+
+**Tiers — the over-tracking safeguard.** Each habit is `core` or `extra`.
+
+- `core` — counts toward **perfect day** and the habit streak
+- `extra` — tracked and individually streaked, but missing it does **not**
+  break a perfect day
+
+Rationale: habit trackers die when a 10-item all-or-nothing grid turns one bad
+day into a broken streak and the user stops opening the app. Tiering keeps the
+data without the cliff. Tiers are user-editable; a habit can be promoted or
+demoted at any time without losing its history.
+
+**Streaks.** Per-habit streak, plus a perfect-day streak over `core` habits
+only. A `count`/`value` habit shows partial progress but the day completes
+only on hitting target.
+
+**Seeded set** (owner-chosen, 2026-10-01; all editable in-app):
+
+| Slot | Tier | Habit |
+|---|---|---|
+| morning | core | Wash face |
+| morning | core | Stretch |
+| morning | extra | Morning sunlight, 10 min |
+| night | core | Wash face |
+| night | core | Stretch |
+| night | extra | Screens off 30 min before bed |
+| anytime | core | Water — 3 L (`count`) |
+| anytime | core | Sleep — 8 h (`value`) |
+| anytime | core | Steps — 10,000 (`value`) |
+| on-study-start | extra | Phone in another room |
+
+**Constraint: no Apple Health integration.** A PWA cannot read HealthKit.
+Steps and sleep are manual `value` entries. This is accepted, not deferred —
+the entry UI must therefore be fast (one field, remembered keyboard type,
+dismissible in a tap). An iOS Shortcuts-based import is explicitly out of
+scope unless the owner reports manual entry as a real friction point.
+
+**Deliberately excluded from v1:** habit-to-study-performance correlation
+analytics. Needs months of data before it says anything true, and a plausible-
+looking but underpowered correlation would be worse than none.
 
 ---
 
@@ -361,7 +416,7 @@ Honors Chem homework and reporting where it is wrong.
 | 2 | Grading engine + worked-solution display | **Usable against real homework** |
 | 3 | FSRS scheduler + Review/Learn/Cram | Memory system active |
 | 4 | Lab scene | Stops looking like a spreadsheet |
-| 5 | Stats + habit grid | Streaks |
+| 5 | Stats + habit tracker (3 input kinds, slots, core/extra tiers) | Streaks and daily routine |
 | 6 | Content scale-up — **alternating** Bio U1, Chem U1, Bio U2, Chem U2, … | Both subjects grow together |
 | 7 | PWA install + deploy | Study on phone, offline |
 
