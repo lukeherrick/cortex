@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import type { Item } from '@/content/types';
-import type { SelfRating } from '@/grading/freeResponse';
 
 interface Props {
   item: Item;
-  onSubmit: (response: string, rating?: SelfRating) => void;
+  /** Auto-graded items: commit the typed or chosen answer. */
+  onSubmit: (response: string) => void;
+  /** Written items: reveal the model answer so the learner can self-rate. */
+  onReveal: (attempt: string) => void;
 }
 
-export default function ItemView({ item, onSubmit }: Props) {
+export default function ItemView({ item, onSubmit, onReveal }: Props) {
   const [text, setText] = useState('');
 
   if (item.type === 'mcq') {
@@ -38,17 +40,22 @@ export default function ItemView({ item, onSubmit }: Props) {
           id="attempt"
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="Write what you remember, then check it against the model answer."
+          placeholder="Write what you remember. Attempting it first is the point — the recall is what builds the memory, not the reading."
         />
-        <button type="button" onClick={() => onSubmit(text, 'good')}>
-          Check
+        <button type="button" onClick={() => onReveal(text)}>
+          Show model answer
         </button>
       </div>
     );
   }
 
   return (
-    <div>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        onSubmit(text);
+      }}
+    >
       <p>{item.prompt}</p>
       <label htmlFor="attempt">Your answer</label>
       <input
@@ -56,10 +63,9 @@ export default function ItemView({ item, onSubmit }: Props) {
         value={text}
         onChange={(e) => setText(e.target.value)}
         placeholder="e.g. 0.450 mol"
+        autoComplete="off"
       />
-      <button type="button" onClick={() => onSubmit(text)}>
-        Check
-      </button>
-    </div>
+      <button type="submit">Check</button>
+    </form>
   );
 }

@@ -57,6 +57,32 @@ fieldset {
   padding: 0;
 }
 
+.unverified {
+  border-left: 3px solid #c08000;
+  font-size: 0.9rem;
+  padding-left: 0.7rem;
+}
+
+.your-attempt p {
+  border-left: 3px solid currentColor;
+  margin-left: 0;
+  opacity: 0.75;
+  padding-left: 0.7rem;
+  white-space: pre-wrap;
+}
+
+.model-answer h4 {
+  margin-bottom: 0.3rem;
+}
+
+.ratings {
+  margin-top: 1.25rem;
+}
+
+.ratings legend {
+  font-weight: 600;
+}
+
 ol li,
 ul li {
   margin-bottom: 0.4rem;

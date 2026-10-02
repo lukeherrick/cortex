@@ -98,22 +98,50 @@ cross-device sync exists.
 
 ---
 
-## Development environment
+## Running it
 
-Node and Python come from a conda environment so the toolchain is pinned and
-reproducible on a fresh machine.
-
-```bash
-# one time
-conda create -n cortex -c conda-forge python=3.12 nodejs=22 git
-
-# every session
-conda activate cortex
+```
+dev.cmd
 ```
 
-Windows note: if `conda` is not on PATH, initialize your shell once with
-`C:\Users\<you>\miniconda3\Scripts\conda.exe init powershell`, then reopen the
-terminal.
+That's all. Double-click it in Explorer, or run it from any terminal. It finds
+the `cortex` conda environment itself and prints a local URL to open.
+
+`test.cmd` runs the content build and the full test suite the same way.
+
+Both are `.cmd` files on purpose. Windows ships with PowerShell's execution
+policy set to `Restricted`, which silently refuses to run profile scripts — so
+the `conda init` hook never loads, `conda activate` appears to succeed while
+doing nothing, and `npm` is not found. `.cmd` files are exempt from that
+policy, so the launchers work regardless of how the shell is configured.
+
+### If you want `conda activate` to work normally
+
+Optional. One command, no admin rights needed:
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+```
+
+`RemoteSigned` is Microsoft's recommended setting for development machines: it
+runs local scripts and still blocks unsigned scripts downloaded from the
+internet. After that, in a new terminal:
+
+```
+conda activate cortex
+npm run dev
+```
+
+### Toolchain
+
+Node and Python come from a conda environment so versions are pinned and
+reproducible on a fresh machine.
+
+```
+conda create -n cortex -c conda-forge python=3.12 nodejs=22 git
+```
+
+Currently: Node 22, Python 3.12.
 
 ---
 
