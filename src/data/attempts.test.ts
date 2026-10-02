@@ -44,4 +44,14 @@ describe('attempts', () => {
   it('starts empty', async () => {
     expect(await allAttempts()).toEqual([]);
   });
+
+  it('orders attempts written in the same millisecond', async () => {
+    for (let i = 0; i < 20; i += 1) {
+      await recordAttempt({ ...base, response: `attempt-${i}` });
+    }
+    const found = await attemptsForItem(base.itemId);
+    expect(found.map((a) => a.response)).toEqual(
+      Array.from({ length: 20 }, (_, i) => `attempt-${i}`),
+    );
+  });
 });
