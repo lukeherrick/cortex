@@ -134,6 +134,17 @@ itself.
 **The scene never delays answering.** Every animation is short and skippable,
 and `prefers-reduced-motion` is honoured.
 
+**A faded cartoon backdrop sits behind everything** (`src/ui/Backdrop.tsx`):
+hills, sun, clouds, drifting molecules, drawn as inline SVG and tinted from
+theme tokens. Kept deliberately low-contrast — the owner asked for atmosphere,
+and a backdrop that competes with question text is a defect. It is fixed,
+`aria-hidden` and pointer-inert. This is **not** the lab scene from spec §5;
+that is still unbuilt.
+
+**Wrong is not one thing.** A verdict renders green (correct), amber (right
+value, wrong sig figs or units), or red (actually wrong). Getting the chemistry
+right and the rounding wrong must not look like failure.
+
 ---
 
 ## Technical
@@ -217,9 +228,85 @@ because it needs human eyes, say that instead of implying it was checked.
 
 ---
 
+## Where the content stands
+
+Last updated 2026-10-02. **22 units mapped, 17 topics, 88 items.**
+
+### Chemistry — 2 of 14 units complete
+
+| Unit | State |
+|---|---|
+| 6 · The Mole | **complete** — molar mass, mole conversions, percent composition, empirical/molecular formulas |
+| 8 · Stoichiometry | **complete** — mole ratios, mass-to-mass, limiting reagent, percent yield |
+| all others | mapped, empty |
+
+### Biology — 3 of 8 units complete
+
+| Unit | State |
+|---|---|
+| 1 · Chemistry of Life | water properties only — **needs more topics** (macromolecules, pH) |
+| 2 · Cell Structure | **complete** — organelles, surface area to volume, membrane structure, transport |
+| 3 · Cellular Energetics | **complete** — ATP, enzymes, respiration, photosynthesis |
+| all others | mapped, empty |
+
+### Next up, in order
+
+1. **Chemistry units 1 and 2** — Matter & Measurement, Atomic Structure. These
+   sit *before* everything chemistry currently has, and Measurement is where
+   significant figures are actually taught, which the app enforces everywhere.
+2. Finish Biology unit 1 (macromolecules, pH) — it is the thinnest complete-
+   looking unit.
+3. Chemistry units 5 and 7 (Nomenclature, Reactions) — both are prerequisites
+   for Stoichiometry that do not exist yet.
+4. Then the scheduler (see below), because by then there is enough content for
+   spacing to matter.
+
+---
+
+## What is working in content authoring
+
+Keep doing these — they are why the content is good, not incidental.
+
+**Write against the misconception, not around the fact.** Every topic targets
+the specific thing learners get wrong, and says so outright: ATP's energy is
+not stored in a bond; an enzyme changes how fast you get there, never where you
+end up; oxygen is respiration's exit, not its fuel; the oxygen you breathe came
+from water, not CO2. State the wrong version and kill it.
+
+**Distractors are the teaching.** Each wrong MCQ option names the specific
+misconception that would lead someone there. The validator enforces that a
+`why` exists; make it a real explanation, not a restatement.
+
+**Anchor in something physical.** Sweating on a run, a pond freezing top-down,
+butter versus olive oil, fertiliser nitrogen percentages, brown fat, cyanide,
+thermite, the Haber process. A worked solution that ends with a real-world
+consequence lands far better than one that ends with a number.
+
+**Wire the prereq graph deliberately.** It is doing real pedagogical work now:
+Enzymes requires Properties of Water (the hydrophobic effect folds the active
+site); Respiration and Photosynthesis require Membrane Structure (chemiosmosis
+only works because the membrane is H+-tight). Those links are what a textbook's
+chapter order cannot give. Look for them rather than defaulting to `prereqs: []`.
+
+**End the concept body with the causal chain**, when there is one. Biology
+exams test the chain, not the list.
+
+---
+
 ## Still unbuilt
 
-Milestone 3 onward: FSRS scheduler and the Review / Learn / Cram modes, the
-full lab scene, stats and the habit tracker, content scale-up, PWA and deploy.
-The habit tracker's design (three input kinds, time slots, core/extra tiers,
-the seeded habit set) is specified in §6 of the spec.
+Milestone 3 onward, in spec order:
+
+- **FSRS scheduler + Review / Learn / Cram modes.** Nothing is "due" yet; the
+  owner browses topics manually. `ts-fsrs` is the chosen library. Spec §4.
+- **The lab scene** — the drawn bench you drop into. Spec §5. Note that the
+  faded cartoon backdrop (`src/ui/Backdrop.tsx`) already exists and is separate
+  from this.
+- **Stats + habit tracker.** Three input kinds, time slots, core/extra tiers,
+  and the owner's seeded habit set are fully specified in spec §6.
+- **PWA + deploy.** Spec §11.
+- **Export/import of all progress to JSON** — a v1 requirement, not optional:
+  it is the only backup until sync exists, and iOS can clear site data.
+
+Progress is already being written to IndexedDB on every answer, but **nothing
+in the UI displays it yet**. That lands with the stats work.
