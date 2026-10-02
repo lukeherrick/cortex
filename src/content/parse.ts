@@ -1,7 +1,7 @@
 import matter from 'gray-matter';
 import type { z } from 'zod';
-import { topicSchema, unitSchema } from '@/content/schema';
-import type { Topic, Unit } from '@/content/types';
+import { topicSchema, unitSchema } from './schema';
+import type { Topic, Unit } from './types';
 
 function fail(path: string, error: z.ZodError): never {
   const issues = error.issues

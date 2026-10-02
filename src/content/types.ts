@@ -8,7 +8,7 @@ import type {
   tierSchema,
   topicSchema,
   unitSchema,
-} from '@/content/schema';
+} from './schema';
 
 export type Subject = z.infer<typeof subjectSchema>;
 export type Depth = z.infer<typeof depthSchema>;

@@ -1,4 +1,4 @@
-import type { ContentBundle, Depth, Subject, Topic } from '@/content/types';
+import type { ContentBundle, Depth, Subject, Topic } from './types';
 
 const ALLOWED_DEPTHS: Record<Subject, readonly Depth[]> = {
   bio: ['level1', 'ap', 'both'],
