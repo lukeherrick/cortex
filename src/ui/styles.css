@@ -875,6 +875,59 @@ button.big {
   opacity: 0.7;
 }
 
+.due-panel {
+  background: var(--card);
+  border-color: var(--leaf);
+  margin-bottom: 1.5rem;
+}
+
+.due-panel.is-clear {
+  border-color: var(--line);
+  border-style: dashed;
+}
+
+.due-panel h2 {
+  margin-bottom: 0.5rem;
+}
+
+.due-breakdown {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+}
+
+.due-breakdown li {
+  background: var(--leaf-soft);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  margin: 0;
+  padding: 0.25rem 0.75rem;
+}
+
+.due-chip {
+  background: var(--leaf);
+  color: #fff;
+}
+
+.done-chip {
+  background: var(--line);
+  color: var(--ink-soft);
+}
+
+.unit-actions {
+  border-top: 2px dashed var(--line);
+  margin: 0 1.2rem;
+  padding: 0.5rem 0 0.9rem;
+}
+
+.unit-actions button {
+  font-size: 0.8rem;
+  text-align: left;
+}
+
 .home-footer {
   color: var(--ink-soft);
   font-size: 0.85rem;
