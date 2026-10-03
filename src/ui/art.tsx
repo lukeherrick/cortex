@@ -4,6 +4,27 @@
  * requests to fail.
  */
 
+/** A tiny four-point sparkle, for buttons and section headings. */
+export function Sparkle({ size = 15 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      className="sparkle"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        d="M12 1.5l2.2 7.1 7.1 2.2-7.1 2.2L12 20.1l-2.2-7.1L2.7 10.8l7.1-2.2Z"
+        fill="currentColor"
+      />
+      <circle cx="20" cy="4" r="1.6" fill="currentColor" opacity="0.7" />
+      <circle cx="4.2" cy="18.5" r="1.2" fill="currentColor" opacity="0.55" />
+    </svg>
+  );
+}
+
 export function FlaskArt({ size = 68 }: { size?: number }) {
   return (
     <svg

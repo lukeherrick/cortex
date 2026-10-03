@@ -42,6 +42,13 @@ const SECONDARY: readonly { rating: SelfRating; label: string }[] = [
   { rating: 'easy', label: 'Too easy' },
 ];
 
+const TIER_LABEL: Record<Item['tier'], string> = {
+  warmup: 'Warm-up',
+  standard: 'Standard',
+  challenge: 'Challenge',
+  ap: 'AP level',
+};
+
 function verdictClass(result: ItemResult): string {
   if (result.correct) return 'verdict right pop';
   // Right chemistry, wrong presentation — worth distinguishing from plain wrong.
@@ -109,8 +116,16 @@ export default function SessionView({ topic, items, biome, onExit }: Props) {
         <FlaskProgress done={state.results.length} total={state.items.length} />
         <p className="progress">
           Question {state.index + 1} of {state.items.length}
-          {item.tier === 'ap' ? ' · AP level' : ''}
+          {state.results.length > 0 && (
+            <>
+              {' · '}
+              {state.results.filter((r) => r.correct).length} right so far
+            </>
+          )}
         </p>
+        <span className={`chip tier-chip tier-${item.tier}`}>
+          {TIER_LABEL[item.tier]}
+        </span>
       </div>
 
       {!item.verified && (
