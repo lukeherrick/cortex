@@ -75,9 +75,37 @@ body {
 main {
   margin: 0 auto;
   max-width: 44rem;
-  padding: 1.25rem 1.1rem 5rem;
+  /*
+   * Safe-area insets keep content clear of the iPhone notch and the home
+   * indicator once the app is installed and running fullscreen. They evaluate
+   * to zero everywhere else, so the desktop layout is unaffected.
+   */
+  padding: calc(1.25rem + env(safe-area-inset-top)) 1.1rem
+    calc(5rem + env(safe-area-inset-bottom));
+  padding-left: calc(1.1rem + env(safe-area-inset-left));
+  padding-right: calc(1.1rem + env(safe-area-inset-right));
   position: relative;
   z-index: 1;
+}
+
+/*
+ * Stop iOS zooming the page when a field is focused. Safari does that whenever
+ * the font is under 16px, and the zoom does not reverse on blur — which leaves
+ * the app stuck at the wrong scale mid-session.
+ */
+input,
+textarea,
+select {
+  font-size: max(16px, 1rem);
+}
+
+/* A deliberate tap target floor. Apple's own guidance is 44px. */
+button {
+  min-height: 44px;
+}
+
+button.quiet {
+  min-height: 0;
 }
 
 /* ------------------------------------------------------------- backdrop */

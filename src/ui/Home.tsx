@@ -187,3 +187,32 @@ export default function Home({ subjects, cards, onPick, onCram }: Props) {
     </>
   );
 }
+
+/**
+ * Shown only in a browser tab, never once the app is installed.
+ *
+ * Spacing only works if the app is opened daily, and daily means the phone —
+ * so the install prompt is worth real estate rather than being buried.
+ */
+export function InstallHint() {
+  const installed =
+    typeof window !== 'undefined' &&
+    window.matchMedia('(display-mode: standalone)').matches;
+
+  if (installed) return null;
+
+  return (
+    <section className="card install-hint">
+      <h3>Put this on your phone</h3>
+      <p className="score-sub">
+        Open this page in <strong>Safari</strong> on your iPhone, tap the{' '}
+        <strong>Share</strong> button, then <strong>Add to Home Screen</strong>.
+        It gets an icon, opens fullscreen, and works with no signal.
+      </p>
+      <p className="nudge">
+        No App Store, no account, nothing to install on the laptop. Reviews are
+        daily — having it on your phone is most of whether this works.
+      </p>
+    </section>
+  );
+}

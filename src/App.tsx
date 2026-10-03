@@ -36,7 +36,7 @@ import Backdrop from '@/ui/Backdrop';
 import BackupPanel from '@/ui/BackupPanel';
 import DuePanel from '@/ui/DuePanel';
 import Habits from '@/ui/Habits';
-import Home from '@/ui/Home';
+import Home, { InstallHint } from '@/ui/Home';
 import SessionView, { type SessionMode } from '@/ui/SessionView';
 import StatsPanel from '@/ui/StatsPanel';
 import TopicView from '@/ui/TopicView';
@@ -263,6 +263,7 @@ export default function App() {
     return shell(
       <>
         {tabs}
+        <InstallHint />
         <BackupPanel
           lastExportAt={lastExport}
           hasProgress={cards.size > 0 || habitEntries.size > 0}
