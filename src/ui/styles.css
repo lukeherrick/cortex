@@ -875,6 +875,264 @@ button.big {
   opacity: 0.7;
 }
 
+/* ------------------------------------------------------------------ tabs */
+
+.tabs {
+  background: var(--card);
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 1.25rem;
+  padding: 0.25rem;
+}
+
+.tabs button {
+  background: none;
+  border: 0;
+  border-radius: 999px;
+  flex: 1 1 0;
+  text-align: center;
+}
+
+.tabs button.on {
+  background: var(--leaf);
+  color: #fff;
+}
+
+.tabs button:hover {
+  transform: none;
+}
+
+/* ----------------------------------------------------------------- stats */
+
+.stats {
+  margin-bottom: 1.5rem;
+}
+
+.stats.is-empty {
+  border-style: dashed;
+  box-shadow: none;
+}
+
+.stat-facts {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.streak-note {
+  color: var(--ink-soft);
+  font-size: 0.82rem;
+  margin: 0 0 1rem;
+}
+
+.coverage {
+  margin-bottom: 0.9rem;
+}
+
+.coverage-bar {
+  background: var(--line);
+  border-radius: 999px;
+  display: flex;
+  height: 10px;
+  margin-bottom: 0.5rem;
+  overflow: hidden;
+}
+
+.coverage-learned {
+  background: var(--leaf);
+}
+
+.coverage-started {
+  background: var(--sun);
+}
+
+.weakest h3 {
+  color: var(--ink-soft);
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  margin-top: 1rem;
+  text-transform: uppercase;
+}
+
+/* ---------------------------------------------------------------- habits */
+
+.habit-header {
+  margin-bottom: 1.25rem;
+  text-align: center;
+}
+
+.habit-score {
+  font-size: 2.6rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0.2rem 0 0.1rem;
+}
+
+.habit-score .of {
+  color: var(--ink-soft);
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.habit-slot {
+  margin-bottom: 1rem;
+}
+
+.habit-slot h3 {
+  align-items: center;
+  color: var(--ink-soft);
+  display: flex;
+  font-size: 0.78rem;
+  gap: 0.5rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.habit-slot.is-now {
+  border-color: var(--leaf);
+}
+
+.now-flag {
+  background: var(--leaf);
+  border-radius: 999px;
+  color: #fff;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  padding: 0.1rem 0.45rem;
+}
+
+.habit-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.habit {
+  margin: 0;
+}
+
+.habit-main {
+  align-items: center;
+  display: flex;
+  gap: 0.7rem;
+  width: 100%;
+}
+
+.habit.is-done .habit-main {
+  background: var(--leaf-soft);
+  border-color: var(--leaf);
+}
+
+.habit-name {
+  align-items: center;
+  display: flex;
+  flex: 1 1 auto;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.extra-flag {
+  background: var(--grape-soft);
+  border-radius: 999px;
+  color: var(--ink-soft);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 0.1rem 0.4rem;
+  text-transform: uppercase;
+}
+
+.habit-value {
+  color: var(--ink-soft);
+  font-size: 0.82rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.habit-streak {
+  background: var(--sun-soft);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  min-width: 1.5rem;
+  padding: 0.1rem 0.4rem;
+  text-align: center;
+}
+
+.tick {
+  background: var(--paper);
+  border: 2px solid var(--line);
+  border-radius: 8px;
+  display: inline-block;
+  flex: 0 0 auto;
+  height: 22px;
+  position: relative;
+  width: 22px;
+}
+
+.tick.on {
+  background: var(--leaf);
+  border-color: var(--leaf);
+}
+
+.tick.on::after {
+  border-bottom: 2.5px solid #fff;
+  border-left: 2.5px solid #fff;
+  content: '';
+  height: 5px;
+  left: 4px;
+  position: absolute;
+  top: 5px;
+  transform: rotate(-45deg);
+  width: 10px;
+}
+
+.habit-entry {
+  align-items: end;
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.habit-entry input {
+  margin: 0;
+  width: 7rem;
+}
+
+.habit-entry label {
+  margin: 0;
+}
+
+.habit-week {
+  display: flex;
+  gap: 3px;
+  justify-content: flex-end;
+  margin-top: 0.3rem;
+  padding-right: 0.2rem;
+}
+
+.habit-week .dot {
+  border-radius: 2px;
+  height: 6px;
+  width: 10px;
+}
+
+.habit-week .hit {
+  background: var(--leaf);
+}
+
+.habit-week .miss {
+  background: var(--line);
+}
+
+.habit-week .off {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
 .due-panel {
   background: var(--card);
   border-color: var(--leaf);

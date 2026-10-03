@@ -1,4 +1,6 @@
 import Dexie, { type EntityTable } from 'dexie';
+import type { Habit, HabitEntry } from '@/habits/types';
+import type { DayRecord } from '@/stats/streak';
 
 export interface AttemptRecord {
   id: string;
@@ -52,6 +54,9 @@ export const db = new Dexie('cortex') as Dexie & {
   attempts: EntityTable<AttemptRecord, 'id'>;
   settings: EntityTable<SettingRecord, 'id'>;
   cards: EntityTable<CardRecord, 'id'>;
+  habits: EntityTable<Habit, 'id'>;
+  habitEntries: EntityTable<HabitEntry, 'id'>;
+  days: EntityTable<DayRecord, 'date'>;
 };
 
 db.version(1).stores({
@@ -63,4 +68,13 @@ db.version(2).stores({
   attempts: 'id, itemId, topicId, answeredAt',
   settings: 'id',
   cards: 'id, topicId, subject, due',
+});
+
+db.version(3).stores({
+  attempts: 'id, itemId, topicId, answeredAt',
+  settings: 'id',
+  cards: 'id, topicId, subject, due',
+  habits: 'id, slot, tier, order',
+  habitEntries: 'id, habitId, date',
+  days: 'date',
 });

@@ -8,7 +8,13 @@ import {
   unitsForSubject,
 } from '@/content';
 import type { Depth, Subject, Topic, Unit } from '@/content/types';
+import { allAttempts, type AttemptRecord } from '@/data/attempts';
 import { cardMap, type CardRecord } from '@/data/cards';
+import { dayMap, recordAnswer } from '@/data/days';
+import { entryMap, loadHabits, setEntry } from '@/data/habits';
+import { toDateKey } from '@/habits/dates';
+import type { EntryMap } from '@/habits/logic';
+import type { Habit } from '@/habits/types';
 import {
   cramQueue,
   dueCount,
@@ -17,10 +23,20 @@ import {
   type QueueEntry,
   type TopicItems,
 } from '@/scheduler/queue';
+import { accuracyOf, coverage, recentAccuracy, weakestTopics } from '@/stats/accuracy';
+import {
+  clearedToday as wasClearedToday,
+  longestStreak,
+  studyStreak,
+  studyTotals,
+  type DayRecord,
+} from '@/stats/streak';
 import Backdrop from '@/ui/Backdrop';
 import DuePanel from '@/ui/DuePanel';
+import Habits from '@/ui/Habits';
 import Home from '@/ui/Home';
 import SessionView, { type SessionMode } from '@/ui/SessionView';
+import StatsPanel from '@/ui/StatsPanel';
 import TopicView from '@/ui/TopicView';
 import '@/ui/styles.css';
 
@@ -48,22 +64,46 @@ type View =
       back: View;
     };
 
+type Tab = 'study' | 'habits';
+
 export default function App() {
   const bundle = loadBundle();
   const [view, setView] = useState<View>({ kind: 'home' });
+  const [tab, setTab] = useState<Tab>('study');
+
   const [cards, setCards] = useState<Map<string, CardRecord>>(new Map());
+  const [attempts, setAttempts] = useState<AttemptRecord[]>([]);
+  const [days, setDays] = useState<Map<string, DayRecord>>(new Map());
+  const [habits, setHabits] = useState<Habit[]>([]);
+  const [habitEntries, setHabitEntries] = useState<EntryMap>(new Map());
   const [reloads, setReloads] = useState(0);
 
-  // Reloaded whenever a session ends, so due counts reflect what just happened.
+  // Reloaded whenever a session ends or a habit is logged, so every number on
+  // screen reflects what just happened.
   useEffect(() => {
     let live = true;
-    void cardMap().then((loaded) => {
-      if (live) setCards(loaded);
-    });
+    void (async () => {
+      const now = Date.now();
+      const [c, a, d, h, e] = await Promise.all([
+        cardMap(),
+        allAttempts(),
+        dayMap(),
+        loadHabits(now),
+        entryMap(),
+      ]);
+      if (!live) return;
+      setCards(c);
+      setAttempts(a);
+      setDays(d);
+      setHabits(h);
+      setHabitEntries(e);
+    })();
     return () => {
       live = false;
     };
   }, [reloads]);
+
+  const refresh = useCallback(() => setReloads((n) => n + 1), []);
 
   const subjects = useMemo(
     () =>
@@ -87,6 +127,7 @@ export default function App() {
   );
 
   const now = Date.now();
+  const today = toDateKey(now);
   const queueInput = { topics: topicItems, cards, now };
 
   const due = dueCount(queueInput);
@@ -97,15 +138,40 @@ export default function App() {
       topics: topicItems.filter((t) => t.topic.subject === subject),
     }),
   }));
+  const totalItems = topicItems.reduce((n, { items }) => n + items.length, 0);
   const unseen = topicItems.reduce(
     (n, { items }) => n + items.filter((i) => !cards.has(i.id)).length,
     0,
   );
 
-  const finishSession = useCallback((back: View) => {
-    setReloads((n) => n + 1);
-    setView(back);
-  }, []);
+  const topicTitles = useMemo(
+    () => new Map(bundle.topics.map((t) => [t.id, t.title])),
+    [bundle],
+  );
+
+  /**
+   * Called after every answer that counts toward scheduling.
+   *
+   * Cards are re-read rather than derived from state because the state in this
+   * closure is a session old. `cleared` has to be captured now: due-ness is a
+   * property of the present and cannot be reconstructed later.
+   */
+  const handleAnswered = useCallback(async () => {
+    const fresh = await cardMap();
+    const at = Date.now();
+    const stillDue = dueCount({ topics: topicItems, cards: fresh, now: at });
+    await recordAnswer(toDateKey(at), stillDue, at);
+  }, [topicItems]);
+
+  const handleSetHabit = useCallback(
+    (habitId: string, date: string, value: number) => {
+      void (async () => {
+        await setEntry(habitId, date, value, Date.now());
+        setHabitEntries(await entryMap());
+      })();
+    },
+    [],
+  );
 
   const shell = (children: React.ReactNode) => (
     <>
@@ -122,7 +188,11 @@ export default function App() {
         mode={view.mode}
         entries={view.entries}
         biome={view.biome}
-        onExit={() => finishSession(view.back)}
+        onAnswered={handleAnswered}
+        onExit={() => {
+          refresh();
+          setView(view.back);
+        }}
       />,
     );
   }
@@ -158,8 +228,48 @@ export default function App() {
     );
   }
 
+  const tabs = (
+    <nav className="tabs" aria-label="Sections">
+      <button
+        type="button"
+        className={tab === 'study' ? 'on' : ''}
+        onClick={() => setTab('study')}
+      >
+        Study
+      </button>
+      <button
+        type="button"
+        className={tab === 'habits' ? 'on' : ''}
+        onClick={() => setTab('habits')}
+      >
+        Habits
+      </button>
+    </nav>
+  );
+
+  if (tab === 'habits') {
+    return shell(
+      <>
+        {tabs}
+        <Habits
+          habits={habits}
+          entries={habitEntries}
+          today={today}
+          hour={new Date(now).getHours()}
+          onSet={handleSetHabit}
+        />
+      </>,
+    );
+  }
+
+  const weakest = weakestTopics(attempts).map((row) => ({
+    ...row,
+    title: topicTitles.get(row.topicId) ?? row.topicId,
+  }));
+
   return shell(
     <>
+      {tabs}
       <DuePanel
         due={due}
         perSubject={perSubject}
@@ -175,6 +285,16 @@ export default function App() {
             back: { kind: 'home' },
           })
         }
+      />
+      <StatsPanel
+        streak={studyStreak(days, today)}
+        longest={longestStreak(days)}
+        clearedToday={wasClearedToday(days, today)}
+        totals={studyTotals(days)}
+        accuracy={accuracyOf(attempts)}
+        recent={recentAccuracy(attempts, now, 7)}
+        coverage={coverage(totalItems, [...cards.values()])}
+        weakest={weakest}
       />
       <Home
         subjects={subjects}
