@@ -1,4 +1,4 @@
----
+﻿---
 id: chem.mole.molar-mass
 unit: chem.u-mole
 subject: chem
@@ -6,7 +6,9 @@ title: Molar Mass
 depth: both
 ced:
   - SPQ-1.1
-prereqs: []
+prereqs:
+  - chem.atomic.isotopes
+  - chem.measure.sig-figs
 items:
   - id: chem.mole.molar-mass.i1
     tier: warmup
