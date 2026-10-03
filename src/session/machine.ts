@@ -18,6 +18,13 @@ export interface ItemResult {
   response: string;
   feedback: string;
   rating: SelfRating | null;
+  /**
+   * Right value, wrong presentation — correct number but wrong significant
+   * figures or units. Reported as a flag rather than left for the UI to sniff
+   * out of the feedback text, so both the verdict colour and the scheduler
+   * read the same fact.
+   */
+  nearMiss: boolean;
 }
 
 export interface SessionState {
@@ -61,12 +68,13 @@ export function revealModelAnswer(
 function autoGrade(
   item: Item,
   response: string,
-): { correct: boolean; feedback: string } {
+): { correct: boolean; feedback: string; nearMiss: boolean } {
   if (item.type === 'numeric') {
     const verdict = gradeNumeric(response, item.answer);
     return {
       correct: verdict.overall,
       feedback: describeNumericVerdict(verdict, item.answer, response),
+      nearMiss: verdict.value === 'correct' && !verdict.overall,
     };
   }
   if (item.type === 'mcq') {
@@ -76,6 +84,7 @@ function autoGrade(
       feedback: verdict.correct
         ? 'Correct.'
         : (verdict.explanation ?? 'Not correct.'),
+      nearMiss: false,
     };
   }
   throw new Error(`autoGrade called for written item ${item.id}`);
@@ -105,8 +114,15 @@ export function submitAnswer(
   let result: ItemResult;
   if (state.phase === 'answering') {
     if (isWritten(item)) return state;
-    const { correct, feedback } = autoGrade(item, response);
-    result = { itemId: item.id, correct, response, feedback, rating: null };
+    const { correct, feedback, nearMiss } = autoGrade(item, response);
+    result = {
+      itemId: item.id,
+      correct,
+      response,
+      feedback,
+      rating: null,
+      nearMiss,
+    };
   } else if (state.phase === 'selfGrading') {
     if (!rating) return state;
     const graded = recordFreeResponse(state.draft, rating);
@@ -116,6 +132,7 @@ export function submitAnswer(
       response: graded.attempt,
       feedback: RATING_FEEDBACK[rating],
       rating,
+      nearMiss: false,
     };
   } else {
     return state;

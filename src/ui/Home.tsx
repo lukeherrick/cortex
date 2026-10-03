@@ -1,4 +1,6 @@
+import type { CardRecord } from '@/data/cards';
 import type { Subject, Topic, Unit } from '@/content/types';
+import { isDue } from '@/scheduler/schedule';
 import { FlaskArt, Sparkle } from '@/ui/art';
 import { BIOME_LABEL, BiomeMascot } from '@/ui/biomes';
 
@@ -9,7 +11,9 @@ interface UnitGroup {
 
 interface Props {
   subjects: readonly { subject: Subject; units: readonly UnitGroup[] }[];
+  cards: ReadonlyMap<string, CardRecord>;
   onPick: (topic: Topic) => void;
+  onCram: (unit: Unit, topics: readonly Topic[]) => void;
 }
 
 const BLURB: Record<Subject, string> = {
@@ -27,12 +31,31 @@ function countItems(topics: readonly Topic[]): number {
 }
 
 interface UnitCardProps extends UnitGroup {
+  cards: ReadonlyMap<string, CardRecord>;
+  now: number;
   onPick: (topic: Topic) => void;
+  onCram: (unit: Unit, topics: readonly Topic[]) => void;
 }
 
-function UnitCard({ unit, topics, onPick }: UnitCardProps) {
+function UnitCard({
+  unit,
+  topics,
+  cards,
+  now,
+  onPick,
+  onCram,
+}: UnitCardProps) {
   const questions = countItems(topics);
   const empty = topics.length === 0;
+
+  const dueIn = (topic: Topic): number =>
+    topic.items.filter((item) => {
+      const card = cards.get(item.id);
+      return card !== undefined && isDue(card, now);
+    }).length;
+
+  const startedIn = (topic: Topic): number =>
+    topic.items.filter((item) => cards.has(item.id)).length;
 
   return (
     <section className={`unit biome-${unit.biome} ${empty ? 'is-empty' : ''}`}>
@@ -55,26 +78,51 @@ function UnitCard({ unit, topics, onPick }: UnitCardProps) {
           Nothing planted here yet — this one is on the way.
         </p>
       ) : (
-        <ul className="topics">
-          {topics.map((topic) => (
-            <li key={topic.id}>
-              <button type="button" onClick={() => onPick(topic)}>
-                <span className="topic-title">{topic.title}</span>
-                <span className="chip">
-                  {topic.items.length} <span className="chip-word">q</span>
-                </span>
-              </button>
-            </li>
-          ))}
-        </ul>
+        <>
+          <ul className="topics">
+            {topics.map((topic) => {
+              const owed = dueIn(topic);
+              const started = startedIn(topic);
+              return (
+                <li key={topic.id}>
+                  <button type="button" onClick={() => onPick(topic)}>
+                    <span className="topic-title">{topic.title}</span>
+                    {owed > 0 && <span className="chip due-chip">{owed} due</span>}
+                    {owed === 0 && started === topic.items.length && (
+                      <span className="chip done-chip">all seen</span>
+                    )}
+                    <span className="chip">
+                      {topic.items.length} <span className="chip-word">q</span>
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+          <div className="unit-actions">
+            <button
+              type="button"
+              className="quiet"
+              onClick={() => onCram(unit, topics)}
+            >
+              Cram the whole unit ({questions}) — doesn&rsquo;t affect your
+              schedule
+            </button>
+          </div>
+        </>
       )}
     </section>
   );
 }
 
-export default function Home({ subjects, onPick }: Props) {
+export default function Home({ subjects, cards, onPick, onCram }: Props) {
+  const now = Date.now();
   const allTopics = subjects.flatMap((s) => s.units.flatMap((u) => u.topics));
   const totalQuestions = countItems(allTopics);
+  const studied = allTopics.reduce(
+    (n, t) => n + t.items.filter((i) => cards.has(i.id)).length,
+    0,
+  );
 
   return (
     <>
@@ -95,10 +143,7 @@ export default function Home({ subjects, onPick }: Props) {
               <strong>{totalQuestions}</strong> questions
             </li>
             <li>
-              <strong>
-                {subjects.reduce((n, s) => n + s.units.length, 0)}
-              </strong>{' '}
-              units mapped
+              <strong>{studied}</strong> started
             </li>
           </ul>
         </div>
@@ -122,7 +167,10 @@ export default function Home({ subjects, onPick }: Props) {
                 key={unit.id}
                 unit={unit}
                 topics={topics}
+                cards={cards}
+                now={now}
                 onPick={onPick}
+                onCram={onCram}
               />
             ))}
           </section>

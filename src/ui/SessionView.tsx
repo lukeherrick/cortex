@@ -1,7 +1,11 @@
-import { useState } from 'react';
-import type { Biome, Item, Topic } from '@/content/types';
+import { useMemo, useState } from 'react';
+import type { Biome, Item } from '@/content/types';
 import { recordAttempt } from '@/data/attempts';
+import { getCard, saveCard } from '@/data/cards';
 import type { SelfRating } from '@/grading/freeResponse';
+import type { Outcome } from '@/scheduler/rating';
+import { reviewCard } from '@/scheduler/schedule';
+import type { QueueEntry } from '@/scheduler/queue';
 import {
   advance,
   isWritten,
@@ -16,10 +20,14 @@ import ItemView from '@/ui/ItemView';
 import ModelAnswer from '@/ui/ModelAnswer';
 import SolutionView from '@/ui/SolutionView';
 
+export type SessionMode = 'review' | 'learn' | 'cram';
+
 interface Props {
-  topic: Topic;
-  items: readonly Item[];
-  /** The biome of the unit this topic belongs to; themes the session. */
+  /** What this sitting is: a topic name, "Today's review", a unit for cram. */
+  title: string;
+  mode: SessionMode;
+  /** Items paired with the topic they came from — review mixes topics. */
+  entries: readonly QueueEntry[];
   biome: Biome;
   onExit: () => void;
 }
@@ -51,29 +59,59 @@ const TIER_LABEL: Record<Item['tier'], string> = {
 
 function verdictClass(result: ItemResult): string {
   if (result.correct) return 'verdict right pop';
-  // Right chemistry, wrong presentation — worth distinguishing from plain wrong.
-  if (/significant figures|wrong unit|no unit given/i.test(result.feedback)) {
-    return 'verdict close pop';
-  }
+  // Right chemistry, wrong presentation — should not look like failure.
+  if (result.nearMiss) return 'verdict close pop';
   return 'verdict wrong pop';
 }
 
-export default function SessionView({ topic, items, biome, onExit }: Props) {
+function toOutcome(result: ItemResult): Outcome {
+  return result.rating === null
+    ? { kind: 'auto', correct: result.correct, nearMiss: result.nearMiss }
+    : { kind: 'self', rating: result.rating };
+}
+
+export default function SessionView({
+  title,
+  mode,
+  entries,
+  biome,
+  onExit,
+}: Props) {
+  const items = useMemo(() => entries.map((e) => e.item), [entries]);
   const [state, setState] = useState(() => startSession(items));
+
+  const current = entries[state.index];
 
   const commit = (response: string, rating?: SelfRating) => {
     const next = submitAnswer(state, response, rating);
     if (next === state) return;
     setState(next);
-    if (next.lastResult) {
-      void recordAttempt({
-        itemId: next.lastResult.itemId,
-        topicId: topic.id,
-        answeredAt: Date.now(),
-        correct: next.lastResult.correct,
-        response: next.lastResult.response,
-      });
-    }
+
+    const result = next.lastResult;
+    if (!result || !current) return;
+
+    void recordAttempt({
+      itemId: result.itemId,
+      topicId: current.topic.id,
+      answeredAt: Date.now(),
+      correct: result.correct,
+      response: result.response,
+    });
+
+    // Cram deliberately does not touch scheduling state. A panicked run
+    // through a unit the night before a test must not convince the scheduler
+    // that the material has been learned.
+    if (mode === 'cram') return;
+
+    void (async () => {
+      const meta = {
+        itemId: result.itemId,
+        topicId: current.topic.id,
+        subject: current.topic.subject,
+      };
+      const existing = await getCard(result.itemId);
+      await saveCard(reviewCard(existing, meta, toOutcome(result), Date.now()));
+    })();
   };
 
   if (state.phase === 'finished') {
@@ -82,30 +120,54 @@ export default function SessionView({ topic, items, biome, onExit }: Props) {
     return (
       <section className={`card done pop biome-${biome}`}>
         <BiomeMascot biome={biome} size={76} />
-        <h2>Nice — that's the set</h2>
+        <h2>Nice — that&rsquo;s the set</h2>
         <p className="score">
           {right}/{total}
         </p>
         <p className="score-sub">
-          {right === total
-            ? 'Clean sweep.'
-            : 'The ones you missed are the ones worth coming back to.'}
+          {total === 0
+            ? 'Nothing to do here.'
+            : right === total
+              ? 'Clean sweep.'
+              : 'The ones you missed will come back sooner.'}
         </p>
+        {mode === 'cram' && total > 0 && (
+          <p className="nudge">
+            Cram runs don&rsquo;t change your schedule — this was for Friday,
+            not for the AP exam.
+          </p>
+        )}
         <button type="button" className="primary" onClick={onExit}>
-          Back to topics
+          Done
         </button>
       </section>
     );
   }
 
-  const item = state.items[state.index];
+  if (!current) {
+    return (
+      <section className="card done">
+        <h2>Nothing due</h2>
+        <p className="score-sub">Come back tomorrow.</p>
+        <button type="button" className="primary" onClick={onExit}>
+          Done
+        </button>
+      </section>
+    );
+  }
+
+  const item = current.item;
+  const showTopicName = current.topic.title !== title;
 
   return (
     <section className={`card biome-${biome}`}>
       <div className="session-header">
         <div className="session-title">
           <BiomeMascot biome={biome} size={38} />
-          <h2>{topic.title}</h2>
+          <div>
+            <h2>{title}</h2>
+            {showTopicName && <p className="eyebrow">{current.topic.title}</p>}
+          </div>
         </div>
         <button type="button" className="quiet" onClick={onExit}>
           End session

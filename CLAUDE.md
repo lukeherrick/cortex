@@ -293,12 +293,47 @@ exams test the chain, not the list.
 
 ---
 
+## The scheduler
+
+Built. `ts-fsrs` 5.x drives it. Three layers, all pure except the repository:
+
+- `src/scheduler/rating.ts` — maps an answer outcome to an FSRS grade. Correct
+  → Good. **Near miss (right value, wrong sig figs or units) → Hard, not
+  Again** — the chemistry was understood, so burying it for a week is wrong,
+  but so is treating it as clean. Wrong → Again. Self-ratings pass straight
+  through. `Easy` is never produced by auto-grading: it is a claim only the
+  learner can make.
+- `src/scheduler/schedule.ts` — converts between `CardRecord` (epoch ms, for
+  IndexedDB and export) and the library's `Date`-based `Card`, and applies a
+  review. Pure: hands back the next record, persisting is the caller's job.
+- `src/scheduler/queue.ts` — review queue (due only, **round-robin across
+  topics** so interleaving survives, most overdue first within a topic, capped
+  at 40), prerequisite gating, learnable topics, and the cram queue.
+
+**`everCorrect` exists on the card because FSRS state cannot answer "has this
+ever been got right".** A card can be in review having only ever been failed.
+Prerequisite gating needs the real answer, so it is tracked explicitly. A near
+miss does **not** set it.
+
+**Cram must never write scheduling state.** A panicked run through a unit the
+night before a test must not convince the scheduler the material is learned.
+`SessionView` returns early before the card write when `mode === 'cram'`;
+there is a test asserting the attempt is still logged while the card stays
+absent. Do not "fix" that asymmetry.
+
+**The daily cap limits one sitting, never what is owed.** Overflow is not
+dropped — `dueCount` ignores the cap deliberately, and there is a test for it.
+
+`SessionView` takes `QueueEntry[]` (item **plus its topic**) rather than a
+single topic, because review interleaves across topics. Its `title` is the
+sitting's name; the per-item topic shows underneath when they differ.
+
+---
+
 ## Still unbuilt
 
-Milestone 3 onward, in spec order:
+In spec order:
 
-- **FSRS scheduler + Review / Learn / Cram modes.** Nothing is "due" yet; the
-  owner browses topics manually. `ts-fsrs` is the chosen library. Spec §4.
 - **The lab scene** — the drawn bench you drop into. Spec §5. Note that the
   faded cartoon backdrop (`src/ui/Backdrop.tsx`) already exists and is separate
   from this.
