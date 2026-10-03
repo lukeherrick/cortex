@@ -330,10 +330,57 @@ sitting's name; the per-item topic shows underneath when they differ.
 
 ---
 
+## Stats and habits
+
+Both built. Spec §6.
+
+### The study streak is strict on purpose
+
+**A day counts only if something was answered *and* nothing was left due.**
+Opening the app does not count. Answering four things and abandoning twenty
+does not count. A streak that is trivially easy to keep carries no information.
+
+Today is a **grace day** everywhere — an unfinished today does not break a
+streak, it just does not extend it. Otherwise every streak reads zero each
+morning, which is useless and discouraging.
+
+`cleared` is **written at the time of answering**, in `src/data/days.ts`, not
+recomputed later. Due-ness is a property of the present; once cards have moved
+on there is no honest way to reconstruct what was owed last Tuesday. Do not
+try to derive the streak from `cards` or `attempts` retroactively.
+
+**Cram advances neither the schedule nor the streak.** `SessionView` fires
+`onAnswered` only outside cram mode. That is deliberate and symmetric with the
+card write — do not "fix" it.
+
+### Habits
+
+`src/habits/` is pure logic; `src/data/habits.ts` persists. Three input kinds
+(`check` / `count` / `value`), four slots (`morning` / `night` / `anytime` /
+`on-study-start`), and the **core/extra tier** split that is the whole
+over-tracking safeguard: only `core` counts toward a perfect day, so a
+ten-habit grid cannot turn one bad day into total failure.
+
+- **A day with no scheduled core habits is not a perfect day.** Vacuous credit
+  would make the streak meaningless. There is a test.
+- Dates are **local** `YYYY-MM-DD` (`src/habits/dates.ts`). A habit logged at
+  11pm belongs to that evening; a UTC key would move it to tomorrow.
+- Tapping a counter past its target **wraps to zero**, so a mis-tap is undoable
+  without a separate control.
+- Steps and sleep are `value` habits typed in by hand, and always will be —
+  a PWA cannot read HealthKit. Commas are accepted in the input.
+- Seeding runs **once**, flagged in `settings` under `habits.seeded`. If he
+  deletes every habit, that is a choice; do not helpfully restore them.
+
+---
+
 ## Still unbuilt
 
 In spec order:
 
+- **Export/import of all progress to JSON.** A v1 requirement, and now more
+  urgent than it was: cards, attempts, the day log and habit history are all
+  only on the device, and iOS can clear site data.
 - **The lab scene** — the drawn bench you drop into. Spec §5. Note that the
   faded cartoon backdrop (`src/ui/Backdrop.tsx`) already exists and is separate
   from this.

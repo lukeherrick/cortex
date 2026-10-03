@@ -29,6 +29,12 @@ interface Props {
   /** Items paired with the topic they came from — review mixes topics. */
   entries: readonly QueueEntry[];
   biome: Biome;
+  /**
+   * Called after an answer has been written to the schedule. Cram does not
+   * fire it: a cram run must not advance the study streak any more than it
+   * advances the schedule.
+   */
+  onAnswered?: () => Promise<void>;
   onExit: () => void;
 }
 
@@ -75,6 +81,7 @@ export default function SessionView({
   mode,
   entries,
   biome,
+  onAnswered,
   onExit,
 }: Props) {
   const items = useMemo(() => entries.map((e) => e.item), [entries]);
@@ -111,6 +118,8 @@ export default function SessionView({
       };
       const existing = await getCard(result.itemId);
       await saveCard(reviewCard(existing, meta, toOutcome(result), Date.now()));
+      // Only after the card is saved, so the day log sees the real due count.
+      await onAnswered?.();
     })();
   };
 
