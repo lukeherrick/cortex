@@ -8,6 +8,7 @@ ced:
   - SPQ-4.1
 prereqs:
   - chem.mole.mole-conversions
+  - chem.reactions.balancing
 items:
   - id: chem.stoich.mole-ratio.i1
     tier: warmup
