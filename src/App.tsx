@@ -9,6 +9,7 @@ import {
 } from '@/content';
 import type { Depth, Subject, Topic, Unit } from '@/content/types';
 import { allAttempts, type AttemptRecord } from '@/data/attempts';
+import { lastExportAt as readLastExport } from '@/data/backup';
 import { cardMap, type CardRecord } from '@/data/cards';
 import { dayMap, recordAnswer } from '@/data/days';
 import { entryMap, loadHabits, setEntry } from '@/data/habits';
@@ -32,6 +33,7 @@ import {
   type DayRecord,
 } from '@/stats/streak';
 import Backdrop from '@/ui/Backdrop';
+import BackupPanel from '@/ui/BackupPanel';
 import DuePanel from '@/ui/DuePanel';
 import Habits from '@/ui/Habits';
 import Home from '@/ui/Home';
@@ -64,7 +66,7 @@ type View =
       back: View;
     };
 
-type Tab = 'study' | 'habits';
+type Tab = 'study' | 'habits' | 'backup';
 
 export default function App() {
   const bundle = loadBundle();
@@ -76,6 +78,7 @@ export default function App() {
   const [days, setDays] = useState<Map<string, DayRecord>>(new Map());
   const [habits, setHabits] = useState<Habit[]>([]);
   const [habitEntries, setHabitEntries] = useState<EntryMap>(new Map());
+  const [lastExport, setLastExport] = useState<number | null>(null);
   const [reloads, setReloads] = useState(0);
 
   // Reloaded whenever a session ends or a habit is logged, so every number on
@@ -84,12 +87,13 @@ export default function App() {
     let live = true;
     void (async () => {
       const now = Date.now();
-      const [c, a, d, h, e] = await Promise.all([
+      const [c, a, d, h, e, x] = await Promise.all([
         cardMap(),
         allAttempts(),
         dayMap(),
         loadHabits(now),
         entryMap(),
+        readLastExport(),
       ]);
       if (!live) return;
       setCards(c);
@@ -97,6 +101,7 @@ export default function App() {
       setDays(d);
       setHabits(h);
       setHabitEntries(e);
+      setLastExport(x);
     })();
     return () => {
       live = false;
@@ -244,8 +249,28 @@ export default function App() {
       >
         Habits
       </button>
+      <button
+        type="button"
+        className={tab === 'backup' ? 'on' : ''}
+        onClick={() => setTab('backup')}
+      >
+        Backup
+      </button>
     </nav>
   );
+
+  if (tab === 'backup') {
+    return shell(
+      <>
+        {tabs}
+        <BackupPanel
+          lastExportAt={lastExport}
+          hasProgress={cards.size > 0 || habitEntries.size > 0}
+          onChanged={refresh}
+        />
+      </>,
+    );
+  }
 
   if (tab === 'habits') {
     return shell(

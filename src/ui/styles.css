@@ -904,6 +904,60 @@ button.big {
   transform: none;
 }
 
+/* ---------------------------------------------------------------- backup */
+
+.backup .card {
+  margin-bottom: 1rem;
+}
+
+.backup input[type='file'] {
+  height: 0;
+  opacity: 0;
+  position: absolute;
+  width: 0;
+}
+
+.backup label[for='backup-file'] {
+  background: var(--card);
+  border: 2px dashed var(--line);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: block;
+  font-size: 0.95rem;
+  letter-spacing: normal;
+  margin: 0.75rem 0 0;
+  padding: 0.9rem 1rem;
+  text-align: center;
+  text-transform: none;
+}
+
+.backup label[for='backup-file']:hover {
+  border-color: var(--flask);
+  color: var(--ink);
+}
+
+.backup input[type='file']:focus-visible + label {
+  outline: 3px solid var(--flask);
+  outline-offset: 2px;
+}
+
+.restore-confirm {
+  margin-top: 1rem;
+}
+
+.restore-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.9rem;
+}
+
+button.danger {
+  background: var(--berry);
+  border-color: var(--berry);
+  color: #fff;
+}
+
 /* ----------------------------------------------------------------- stats */
 
 .stats {

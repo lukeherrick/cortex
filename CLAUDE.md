@@ -374,13 +374,38 @@ ten-habit grid cannot turn one bad day into total failure.
 
 ---
 
+## Backup
+
+Built — `src/data/backup.ts`, with a **Backup** tab. This is the only safety
+net: progress is on one device and iOS can clear site data without warning.
+
+- **Content is never in a backup.** It ships with the build and is regenerated
+  from `content/`. Including it would bloat the file and let a stale backup
+  overwrite corrected questions. There is a test asserting content strings do
+  not appear in the export.
+- **Rows are validated loosely and passed through** (`BackupRow` =
+  `Record<string, unknown>`). The envelope is checked strictly; rows only need
+  an identity. Strict per-field schemas would reject a backup written by a
+  later version that added a field, which is the opposite of what a backup is
+  for. `BackupRow` is declared by hand, not inferred from zod, because zod's
+  `passthrough` output type is an index signature the record interfaces do not
+  structurally satisfy.
+- **A newer-format backup is refused, not guessed at.** Importing it could
+  silently drop fields this build does not know about.
+- **Two import modes.** `replace` wipes and restores exactly — for a real
+  restore. `merge` keeps whichever copy of each record has the later
+  `updatedAt` — for pulling in another device, and the same last-write-wins
+  rule a sync adapter would use. Nothing is written until the file has parsed
+  and the owner has confirmed.
+- `settings` travels with the backup, including `habits.seeded`, or a restore
+  would get its habits re-seeded on top of the imported ones.
+
+---
+
 ## Still unbuilt
 
 In spec order:
 
-- **Export/import of all progress to JSON.** A v1 requirement, and now more
-  urgent than it was: cards, attempts, the day log and habit history are all
-  only on the device, and iOS can clear site data.
 - **The lab scene** — the drawn bench you drop into. Spec §5. Note that the
   faded cartoon backdrop (`src/ui/Backdrop.tsx`) already exists and is separate
   from this.
