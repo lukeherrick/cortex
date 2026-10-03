@@ -105,9 +105,14 @@ dev.cmd
 ```
 
 That's all. Double-click it in Explorer, or run it from any terminal. It finds
-the `cortex` conda environment itself and prints a local URL to open.
+the `cortex` conda environment itself and opens your browser.
 
 `test.cmd` runs the content build and the full test suite the same way.
+
+`phone.cmd` serves the app to other devices on the same WiFi, so you can use it
+on a phone while the laptop is on. Note the limitation: over plain http a
+browser will run the app but **will not install it or cache it offline** —
+that needs https, which means deploying.
 
 Both are `.cmd` files on purpose. Windows ships with PowerShell's execution
 policy set to `Restricted`, which silently refuses to run profile scripts — so

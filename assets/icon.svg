@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!--
+    App icon source. Rasterised to PNG by scripts/make-icons.mjs.
+
+    Designed as a maskable icon: everything that matters sits inside the middle
+    80% (a circle of radius ~205 about the centre), so Android can crop it to a
+    circle, squircle or rounded square without clipping the flask.
+  -->
+  <rect width="512" height="512" fill="#ffc542"/>
+  <circle cx="256" cy="256" r="196" fill="#fffdf7"/>
+
+  <g transform="translate(256 268) scale(5.6) translate(-32 -32)">
+    <path
+      d="M26 8h12v14l12 24a8 8 0 0 1-7 12H21a8 8 0 0 1-7-12l12-24V8Z"
+      fill="#dcf0fa" stroke="#22251f" stroke-width="3" stroke-linejoin="round"/>
+    <path
+      d="M18.5 40h27l4.5 6a8 8 0 0 1-7 12H21a8 8 0 0 1-7-12l4.5-6Z"
+      fill="#3aa7d8"/>
+    <path d="M24 6h16" stroke="#22251f" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="27" cy="48" r="3" fill="#ffc542"/>
+    <circle cx="37" cy="52" r="2" fill="#ffc542"/>
+    <circle cx="33" cy="44" r="1.5" fill="#ffc542"/>
+  </g>
+</svg>

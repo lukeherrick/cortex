@@ -402,10 +402,42 @@ net: progress is on one device and iOS can clear site data without warning.
 
 ---
 
+## PWA and installing
+
+Built. `vite-plugin-pwa` generates a manifest and a Workbox service worker that
+**precaches the whole app**, questions included — so once installed it works
+with no signal at all.
+
+- **Icons** are generated from `assets/icon.svg` by `npm run icons` (sharp).
+  The PNGs are **committed**, so a normal build and a fresh clone never need
+  sharp. Regenerate only when the source SVG changes. The 180px
+  `apple-touch-icon.png` is the one iOS actually uses.
+- **`CORTEX_BASE`** sets the served path. Default `/`. A GitHub Pages *project*
+  page lives at `/cortex/`, and the manifest `start_url`, the `scope`, the
+  asset URLs and the service worker scope must all agree or the app loads blank.
+- **The manifest name is deliberately plain ASCII.** It is rendered by the OS
+  launcher, where an encoding slip is ugly and easy to miss.
+- CSS carries `env(safe-area-inset-*)` padding for the notch and home
+  indicator, a 16px input-font floor (Safari zooms below that and does not zoom
+  back), and a 44px tap-target minimum.
+
+**Not yet deployed, and that is the remaining blocker to real use.** GitHub
+Pages cannot serve a *private* repo on a free account, so the options are: make
+the repo public, pay for Pro, or use a host with free private deploys such as
+Vercel or Netlify. That decision is the owner's — do not make the repo public
+to route around it.
+
+`phone.cmd` serves over the LAN as a stopgap. Over plain http the app runs but
+**cannot install or cache offline**; browsers require https for a service
+worker. Say so plainly rather than letting it look broken.
+
+---
+
 ## Still unbuilt
 
 In spec order:
 
+- **Deploying it** (see above) — the last thing between the app and daily use.
 - **The lab scene** — the drawn bench you drop into. Spec §5. Note that the
   faded cartoon backdrop (`src/ui/Backdrop.tsx`) already exists and is separate
   from this.
