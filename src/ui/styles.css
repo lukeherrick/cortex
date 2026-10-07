@@ -932,6 +932,667 @@ button.big {
   transform: none;
 }
 
+/* ---------------------------------------------------------------- streak */
+
+.streak-banner {
+  align-items: center;
+  background: linear-gradient(135deg, var(--sun-soft), var(--blush-soft));
+  border: 2px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  display: flex;
+  gap: 1.1rem;
+  margin-bottom: 1.25rem;
+  padding: 1rem 1.2rem;
+}
+
+.streak-banner.is-clear {
+  border-color: var(--leaf);
+}
+
+.streak-number {
+  align-items: baseline;
+  display: flex;
+  flex: 0 0 auto;
+  gap: 0.4rem;
+}
+
+.streak-count {
+  font-size: 3rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.streak-unit {
+  color: var(--ink-soft);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.streak-right {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.streak-week {
+  display: flex;
+  gap: 0.3rem;
+  list-style: none;
+  margin: 0 0 0.45rem;
+  padding: 0;
+}
+
+.streak-day {
+  align-items: center;
+  background: var(--card);
+  border-radius: 50%;
+  color: var(--ink-soft);
+  display: flex;
+  font-size: 0.68rem;
+  font-weight: 700;
+  height: 1.7rem;
+  justify-content: center;
+  margin: 0;
+  width: 1.7rem;
+}
+
+.streak-day.hit {
+  background: var(--leaf);
+  color: #fff;
+}
+
+.streak-day.today {
+  box-shadow: 0 0 0 2px var(--ink);
+}
+
+/* ---------------------------------------------------------------- growth */
+
+.growth {
+  flex: 0 0 auto;
+}
+
+.growth-soil,
+.growth-stem {
+  fill: none;
+  stroke: var(--ink-soft);
+  stroke-linecap: round;
+  stroke-width: 2;
+}
+
+.growth-soil {
+  opacity: 0.35;
+}
+
+.growth-stem {
+  stroke: var(--leaf);
+}
+
+.growth-seed {
+  fill: var(--line);
+}
+
+.growth-leaf {
+  fill: var(--leaf);
+}
+
+.growth-bud {
+  fill: var(--sun);
+}
+
+.growth-bloom circle {
+  fill: var(--blush);
+}
+
+.growth-bloom .growth-centre {
+  fill: var(--sun);
+}
+
+.growth-untouched {
+  opacity: 0.45;
+}
+
+.topic-title {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+
+.topic-sub {
+  color: var(--ink-soft);
+  font-size: 0.72rem;
+  font-weight: 500;
+}
+
+.grow-bar {
+  background: var(--line);
+  border-radius: 999px;
+  flex: 0 0 48px;
+  height: 6px;
+  overflow: hidden;
+}
+
+.grow-bar span {
+  background: var(--leaf);
+  display: block;
+  height: 100%;
+}
+
+.unit-mastery {
+  color: var(--leaf);
+  font-size: 0.76rem;
+  font-weight: 700;
+  margin: 0.1rem 0 0;
+}
+
+/* ------------------------------------------------------------ lab scene */
+
+.lab-scene {
+  border-radius: var(--radius) var(--radius) 0 0;
+  margin-bottom: -1.5rem;
+  overflow: hidden;
+}
+
+.lab-scene svg {
+  display: block;
+  width: 100%;
+}
+
+.lab-wall {
+  fill: var(--biome-soft, var(--flask-soft));
+}
+
+.lab-shelf,
+.lab-bench {
+  fill: var(--biome, var(--flask));
+  opacity: 0.55;
+}
+
+.lab-window {
+  fill: var(--card);
+  stroke: var(--ink-soft);
+  stroke-width: 2;
+  opacity: 0.9;
+}
+
+.lab-window-land {
+  fill: var(--leaf);
+  opacity: 0.5;
+}
+
+.lab-window-sun {
+  fill: var(--sun);
+}
+
+.lab-window-bars {
+  stroke: var(--ink-soft);
+  stroke-width: 2;
+  opacity: 0.5;
+}
+
+.lab-bottles rect,
+.lab-tubes rect {
+  fill: var(--card);
+  stroke: var(--ink-soft);
+  stroke-width: 1.5;
+  opacity: 0.85;
+}
+
+.lab-glass {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+  opacity: 0.75;
+}
+
+.lab-glass-lip {
+  stroke: var(--ink);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  opacity: 0.75;
+}
+
+.lab-liquid {
+  fill: var(--biome, var(--flask));
+  transition: y 500ms ease;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0.9;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-26px);
+  }
+}
+
+.lab-bubbles circle {
+  fill: var(--sun);
+  animation: rise 900ms ease-out forwards;
+}
+
+.lab-bubbles circle:nth-child(2) {
+  animation-delay: 120ms;
+}
+
+.lab-bubbles circle:nth-child(3) {
+  animation-delay: 240ms;
+}
+
+.lab-bubbles circle:nth-child(4) {
+  animation-delay: 60ms;
+}
+
+.card.session {
+  position: relative;
+}
+
+/* ----------------------------------------------------------- done screen */
+
+.done-mascot {
+  display: inline-block;
+}
+
+@keyframes cheer {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-3deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(3deg);
+  }
+}
+
+.done-mascot.is-clean .mascot {
+  animation: cheer 700ms ease-in-out 3;
+}
+
+.gained {
+  background: var(--leaf-soft);
+  border-radius: var(--radius-sm);
+  margin: 0 0 0.7rem;
+  padding: 0.6rem 0.8rem;
+}
+
+.comeback {
+  background: var(--sun-soft);
+  border-radius: var(--radius-sm);
+  font-size: 0.95rem;
+  margin: 0 0 0.9rem;
+  padding: 0.7rem 0.85rem;
+}
+
+.done-streak {
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+/* ----------------------------------------------------------------- focus */
+
+.focus {
+  position: relative;
+}
+
+.meadow {
+  border-radius: var(--radius) var(--radius) 0 0;
+  margin-bottom: -2rem;
+  overflow: hidden;
+}
+
+.meadow svg {
+  display: block;
+  height: 180px;
+  width: 100%;
+}
+
+.meadow-sky {
+  fill: #cfeaf7;
+}
+
+.phase-shortBreak .meadow-sky,
+.phase-longBreak .meadow-sky {
+  fill: #ffe6b8;
+}
+
+.meadow-sun {
+  fill: #ffd166;
+}
+
+.meadow-sun-halo {
+  fill: #ffd166;
+  opacity: 0.3;
+}
+
+.meadow-cloud ellipse {
+  fill: #fff;
+  opacity: 0.9;
+}
+
+.meadow-hill-far {
+  fill: #8fd07a;
+}
+
+.meadow-hill-near {
+  fill: #5fb866;
+}
+
+.meadow-grass path {
+  fill: none;
+  stroke: #3f9450;
+  stroke-linecap: round;
+  stroke-width: 2.5;
+}
+
+.meadow-flowers path {
+  stroke: #3f9450;
+  stroke-width: 2;
+}
+
+.meadow-flowers .petal-a {
+  fill: #ff8fb0;
+}
+
+.meadow-flowers .petal-b {
+  fill: #fff0a8;
+}
+
+.bunny-body,
+.bunny-head,
+.bunny-ear {
+  fill: #fffaf2;
+  stroke: #6b5a4e;
+  stroke-width: 1.6;
+}
+
+.bunny-ear-inner {
+  fill: #ffc2d1;
+}
+
+.bunny-eye,
+.bunny-nose {
+  fill: #4a3b33;
+}
+
+.bunny-nose {
+  fill: #e98aa6;
+}
+
+.bunny-blush {
+  fill: #ffb3c6;
+  opacity: 0.75;
+}
+
+.bunny-tail {
+  fill: #fff;
+  stroke: #6b5a4e;
+  stroke-width: 1.4;
+}
+
+.bunny-shadow {
+  fill: #3f9450;
+  opacity: 0.25;
+}
+
+.bunny-book rect {
+  fill: var(--flask);
+  stroke: #4a3b33;
+  stroke-width: 1.4;
+}
+
+.bunny-book path {
+  stroke: #4a3b33;
+  stroke-width: 1.4;
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    transform: translate(176px, 150px) scale(1);
+  }
+  50% {
+    transform: translate(176px, 150px) scale(1.025);
+  }
+}
+
+.is-running .bunny-main {
+  animation: breathe 3.6s ease-in-out infinite;
+  transform-origin: center;
+}
+
+/* The friend and the butterflies only come out on a break. */
+.bunny-friend,
+.meadow-butterfly {
+  opacity: 0;
+}
+
+@keyframes hop {
+  0%,
+  100% {
+    transform: translate(96px, 164px);
+  }
+  40% {
+    transform: translate(108px, 150px);
+  }
+  70% {
+    transform: translate(120px, 164px);
+  }
+}
+
+@keyframes flutter {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-26px, -16px);
+  }
+}
+
+.phase-shortBreak .bunny-friend,
+.phase-longBreak .bunny-friend {
+  animation: hop 2.4s ease-in-out infinite;
+  opacity: 1;
+}
+
+.phase-shortBreak .meadow-butterfly,
+.phase-longBreak .meadow-butterfly {
+  animation: flutter 4s ease-in-out infinite;
+  opacity: 1;
+}
+
+.meadow-butterfly path {
+  fill: #ff8fb0;
+}
+
+.focus-card {
+  position: relative;
+  text-align: center;
+}
+
+.focus-dial {
+  display: inline-block;
+  margin: 0.4rem 0 0.8rem;
+  position: relative;
+}
+
+.focus-dial svg {
+  display: block;
+  height: 200px;
+  width: 200px;
+}
+
+.dial-track {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 12;
+}
+
+.dial-fill {
+  fill: none;
+  stroke: var(--leaf);
+  stroke-linecap: round;
+  stroke-width: 12;
+  transition: stroke-dashoffset 300ms linear;
+}
+
+.phase-shortBreak .dial-fill,
+.phase-longBreak .dial-fill {
+  stroke: var(--sun);
+}
+
+.focus-readout {
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.focus-time {
+  display: block;
+  font-size: 2.9rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.focus-sub {
+  color: var(--ink-soft);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.focus-blurb {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  margin: 0 auto 1rem;
+  max-width: 24rem;
+}
+
+.focus-secondary {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.focus-footer {
+  border-top: 2px dashed var(--line);
+  margin-top: 1.1rem;
+  padding-top: 0.7rem;
+}
+
+.focus-count {
+  font-weight: 700;
+  margin: 0 0 0.15rem;
+}
+
+.focus-wake {
+  color: var(--ink-soft);
+  font-size: 0.78rem;
+  margin: 0;
+}
+
+/* ------------------------------------------------------------ study buddy */
+
+.buddy-intro {
+  margin-bottom: 1.25rem;
+}
+
+.tier-heading {
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  margin: 1.5rem 0 0.6rem;
+  text-transform: uppercase;
+}
+
+.tier-heading.tier-proven {
+  color: var(--leaf);
+}
+
+.tier-heading.tier-useful {
+  color: var(--flask);
+}
+
+.tier-heading.tier-avoid {
+  color: var(--berry);
+}
+
+.technique {
+  background: var(--card);
+  border: 2px solid var(--line);
+  border-left-width: 6px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 0.9rem;
+  padding: 1rem 1.1rem;
+}
+
+.technique.tier-proven {
+  border-left-color: var(--leaf);
+}
+
+.technique.tier-useful {
+  border-left-color: var(--flask);
+}
+
+.technique.tier-avoid {
+  border-left-color: var(--berry);
+}
+
+.technique header {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.45rem;
+}
+
+.technique h3 {
+  margin: 0;
+}
+
+.technique-what {
+  font-weight: 600;
+}
+
+.technique dl {
+  margin: 0;
+}
+
+.technique dl > div {
+  margin-bottom: 0.6rem;
+}
+
+.technique dt {
+  color: var(--ink-soft);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.technique dd {
+  margin: 0.15rem 0 0;
+}
+
+.technique .watch dd {
+  background: var(--sun-soft);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.7rem;
+}
+
 /* ---------------------------------------------------------------- backup */
 
 .backup .card {

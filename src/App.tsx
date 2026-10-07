@@ -35,10 +35,13 @@ import {
 import Backdrop from '@/ui/Backdrop';
 import BackupPanel from '@/ui/BackupPanel';
 import DuePanel from '@/ui/DuePanel';
+import FocusTimer from '@/ui/FocusTimer';
 import Habits from '@/ui/Habits';
 import Home, { InstallHint } from '@/ui/Home';
 import SessionView, { type SessionMode } from '@/ui/SessionView';
 import StatsPanel from '@/ui/StatsPanel';
+import StreakBanner from '@/ui/StreakBanner';
+import StudyBuddy from '@/ui/StudyBuddy';
 import TopicView from '@/ui/TopicView';
 import '@/ui/styles.css';
 
@@ -66,7 +69,15 @@ type View =
       back: View;
     };
 
-type Tab = 'study' | 'habits' | 'backup';
+type Tab = 'study' | 'focus' | 'buddy' | 'habits' | 'backup';
+
+const TABS: readonly { id: Tab; label: string }[] = [
+  { id: 'study', label: 'Study' },
+  { id: 'focus', label: 'Focus' },
+  { id: 'buddy', label: 'Buddy' },
+  { id: 'habits', label: 'Habits' },
+  { id: 'backup', label: 'Backup' },
+];
 
 export default function App() {
   const bundle = loadBundle();
@@ -193,6 +204,8 @@ export default function App() {
         mode={view.mode}
         entries={view.entries}
         biome={view.biome}
+        cardsAtStart={cards}
+        streak={studyStreak(days, today)}
         onAnswered={handleAnswered}
         onExit={() => {
           refresh();
@@ -235,29 +248,36 @@ export default function App() {
 
   const tabs = (
     <nav className="tabs" aria-label="Sections">
-      <button
-        type="button"
-        className={tab === 'study' ? 'on' : ''}
-        onClick={() => setTab('study')}
-      >
-        Study
-      </button>
-      <button
-        type="button"
-        className={tab === 'habits' ? 'on' : ''}
-        onClick={() => setTab('habits')}
-      >
-        Habits
-      </button>
-      <button
-        type="button"
-        className={tab === 'backup' ? 'on' : ''}
-        onClick={() => setTab('backup')}
-      >
-        Backup
-      </button>
+      {TABS.map(({ id, label }) => (
+        <button
+          key={id}
+          type="button"
+          className={tab === id ? 'on' : ''}
+          onClick={() => setTab(id)}
+        >
+          {label}
+        </button>
+      ))}
     </nav>
   );
+
+  if (tab === 'focus') {
+    return shell(
+      <>
+        {tabs}
+        <FocusTimer />
+      </>,
+    );
+  }
+
+  if (tab === 'buddy') {
+    return shell(
+      <>
+        {tabs}
+        <StudyBuddy />
+      </>,
+    );
+  }
 
   if (tab === 'backup') {
     return shell(
@@ -296,6 +316,13 @@ export default function App() {
   return shell(
     <>
       {tabs}
+      <StreakBanner
+        streak={studyStreak(days, today)}
+        longest={longestStreak(days)}
+        clearedToday={wasClearedToday(days, today)}
+        days={days}
+        today={today}
+      />
       <DuePanel
         due={due}
         perSubject={perSubject}

@@ -1,8 +1,10 @@
 import type { CardRecord } from '@/data/cards';
 import type { Subject, Topic, Unit } from '@/content/types';
 import { isDue } from '@/scheduler/schedule';
+import { combineMastery, masteryOf, STAGE_LABEL } from '@/stats/mastery';
 import { FlaskArt, Sparkle } from '@/ui/art';
 import { BIOME_LABEL, BiomeMascot } from '@/ui/biomes';
+import { GrowthIcon } from '@/ui/growth';
 
 interface UnitGroup {
   unit: Unit;
@@ -54,8 +56,9 @@ function UnitCard({
       return card !== undefined && isDue(card, now);
     }).length;
 
-  const startedIn = (topic: Topic): number =>
-    topic.items.filter((item) => cards.has(item.id)).length;
+  const unitMastery = combineMastery(
+    topics.map((t) => masteryOf(t.items, cards)),
+  );
 
   return (
     <section className={`unit biome-${unit.biome} ${empty ? 'is-empty' : ''}`}>
@@ -70,6 +73,11 @@ function UnitCard({
               ? 'Coming soon'
               : `${topics.length} ${topics.length === 1 ? 'topic' : 'topics'} · ${questions} questions`}
           </p>
+          {!empty && unitMastery.seen > 0 && (
+            <p className="unit-mastery">
+              {unitMastery.mastered} of {unitMastery.total} mastered
+            </p>
+          )}
         </div>
       </div>
 
@@ -82,17 +90,18 @@ function UnitCard({
           <ul className="topics">
             {topics.map((topic) => {
               const owed = dueIn(topic);
-              const started = startedIn(topic);
+              const m = masteryOf(topic.items, cards);
               return (
                 <li key={topic.id}>
                   <button type="button" onClick={() => onPick(topic)}>
-                    <span className="topic-title">{topic.title}</span>
+                    <GrowthIcon stage={m.stage} />
+                    <span className="topic-title">
+                      {topic.title}
+                      <span className="topic-sub">{STAGE_LABEL[m.stage]}</span>
+                    </span>
                     {owed > 0 && <span className="chip due-chip">{owed} due</span>}
-                    {owed === 0 && started === topic.items.length && (
-                      <span className="chip done-chip">all seen</span>
-                    )}
-                    <span className="chip">
-                      {topic.items.length} <span className="chip-word">q</span>
+                    <span className="grow-bar" aria-hidden="true">
+                      <span style={{ width: `${Math.round(m.score * 100)}%` }} />
                     </span>
                   </button>
                 </li>
