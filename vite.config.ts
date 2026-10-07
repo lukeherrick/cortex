@@ -31,8 +31,14 @@ export default defineConfig({
         // just makes the question text span an uncomfortable line length.
         orientation: 'portrait',
         display: 'standalone',
-        theme_color: '#ffc542',
-        background_color: '#fffdf7',
+        /*
+         * Both match the top of the page's sky gradient, not the paper
+         * colour. iOS paints background_color as the launch splash and
+         * theme_color behind the status bar, so anything else here shows as
+         * a flash of the wrong colour every single time the app is opened.
+         */
+        theme_color: '#ffeec9',
+        background_color: '#ffeec9',
         start_url: base,
         scope: base,
         icons: [
