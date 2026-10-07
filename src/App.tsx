@@ -13,6 +13,8 @@ import { lastExportAt as readLastExport } from '@/data/backup';
 import { cardMap, type CardRecord } from '@/data/cards';
 import { dayMap, recordAnswer } from '@/data/days';
 import { entryMap, loadHabits, setEntry } from '@/data/habits';
+import { getSetting, setSetting, TECHNIQUE_KEY } from '@/data/settings';
+import { DEFAULT_TECHNIQUE_ID, techniqueById } from '@/focus/techniques';
 import { toDateKey } from '@/habits/dates';
 import type { EntryMap } from '@/habits/logic';
 import type { Habit } from '@/habits/types';
@@ -90,6 +92,7 @@ export default function App() {
   const [habits, setHabits] = useState<Habit[]>([]);
   const [habitEntries, setHabitEntries] = useState<EntryMap>(new Map());
   const [lastExport, setLastExport] = useState<number | null>(null);
+  const [techniqueId, setTechniqueId] = useState<string>(DEFAULT_TECHNIQUE_ID);
   const [reloads, setReloads] = useState(0);
 
   // Reloaded whenever a session ends or a habit is logged, so every number on
@@ -98,13 +101,14 @@ export default function App() {
     let live = true;
     void (async () => {
       const now = Date.now();
-      const [c, a, d, h, e, x] = await Promise.all([
+      const [c, a, d, h, e, x, t] = await Promise.all([
         cardMap(),
         allAttempts(),
         dayMap(),
         loadHabits(now),
         entryMap(),
         readLastExport(),
+        getSetting<string>(TECHNIQUE_KEY, DEFAULT_TECHNIQUE_ID),
       ]);
       if (!live) return;
       setCards(c);
@@ -113,6 +117,7 @@ export default function App() {
       setHabits(h);
       setHabitEntries(e);
       setLastExport(x);
+      setTechniqueId(t);
     })();
     return () => {
       live = false;
@@ -265,7 +270,10 @@ export default function App() {
     return shell(
       <>
         {tabs}
-        <FocusTimer />
+        <FocusTimer
+          technique={techniqueById(techniqueId)}
+          onOpenBuddy={() => setTab('buddy')}
+        />
       </>,
     );
   }
@@ -274,7 +282,14 @@ export default function App() {
     return shell(
       <>
         {tabs}
-        <StudyBuddy />
+        <StudyBuddy
+          chosenId={techniqueId}
+          onChoose={(id) => {
+            setTechniqueId(id);
+            void setSetting(TECHNIQUE_KEY, id);
+          }}
+          onOpenTimer={() => setTab('focus')}
+        />
       </>,
     );
   }
