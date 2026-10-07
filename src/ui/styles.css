@@ -148,79 +148,278 @@ button.quiet {
   z-index: 0;
 }
 
-.backdrop svg {
+/* The sky itself: a warm vertical wash the orbs and art sit on top of. */
+.backdrop::before {
+  background: linear-gradient(
+    180deg,
+    #ffeec9 0%,
+    #ffe3d6 22%,
+    #fdeae6 42%,
+    var(--paper) 72%
+  );
+  content: '';
+  inset: 0;
+  position: absolute;
+}
+
+.backdrop-art {
   height: 100%;
+  position: relative;
   width: 100%;
 }
 
-.bd-sun {
-  fill: var(--sun);
+/* ---- ambient orbs ---- */
+
+/*
+ * Ambient colour. Opacity is capped low on purpose: secondary text
+ * (--ink-soft) sits directly on this wash with no card behind it, and a
+ * stronger orb drags that pairing under the 4.5:1 contrast floor.
+ */
+.orb {
+  border-radius: 50%;
+  filter: blur(70px);
   opacity: 0.4;
+  position: absolute;
 }
 
-.bd-sun-halo {
-  fill: var(--sun);
-  opacity: 0.14;
+.orb-a {
+  background: var(--blush);
+  height: 42vmin;
+  left: -10vmin;
+  top: -8vmin;
+  width: 42vmin;
+}
+
+.orb-b {
+  background: var(--sun);
+  height: 48vmin;
+  right: -14vmin;
+  top: 6vmin;
+  width: 48vmin;
+}
+
+.orb-c {
+  background: var(--grape);
+  height: 36vmin;
+  left: 38%;
+  top: 28vmin;
+  width: 36vmin;
+  opacity: 0.24;
+}
+
+@keyframes orbit {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(3vmin, 4vmin, 0) scale(1.08);
+  }
+}
+
+.orb-a {
+  animation: orbit 26s ease-in-out infinite;
+}
+
+.orb-b {
+  animation: orbit 34s ease-in-out infinite reverse;
+}
+
+.orb-c {
+  animation: orbit 30s ease-in-out infinite 4s;
+}
+
+/* ---- landscape ---- */
+
+.bd-sun {
+  fill: #fff6d8;
+  opacity: 0.85;
+}
+
+.bd-glow-in {
+  stop-color: var(--sun);
+  stop-opacity: 0.45;
+}
+
+.bd-glow-out {
+  stop-color: var(--sun);
+  stop-opacity: 0;
 }
 
 .bd-cloud ellipse {
-  fill: var(--card);
-  opacity: 0.75;
+  fill: #fff;
+  opacity: 0.6;
+}
+
+.bd-mountains {
+  fill: var(--grape);
+  opacity: 0.16;
+}
+
+.bd-far-top {
+  stop-color: #a8dd93;
+}
+
+.bd-far-bottom {
+  stop-color: #74c47f;
+}
+
+.bd-near-top {
+  stop-color: #74c47f;
+}
+
+.bd-near-bottom {
+  stop-color: #4ea968;
+}
+
+.bd-hill-far {
+  opacity: 0.3;
+}
+
+.bd-hill-near {
+  opacity: 0.42;
 }
 
 .bd-mol circle {
   fill: var(--flask);
-  opacity: 0.22;
+  opacity: 0.2;
 }
 
 .bd-mol path {
   stroke: var(--flask);
   stroke-width: 4;
-  opacity: 0.22;
+  opacity: 0.2;
 }
 
 .bd-bubble circle {
   fill: var(--flask);
-  opacity: 0.25;
-}
-
-.bd-hill-far {
-  fill: var(--leaf);
-  opacity: 0.16;
-}
-
-.bd-hill-near {
-  fill: var(--leaf);
-  opacity: 0.26;
+  opacity: 0.22;
 }
 
 .bd-tuft path {
   fill: none;
-  stroke: var(--leaf);
+  stroke: #2f7f46;
   stroke-linecap: round;
   stroke-width: 3;
-  opacity: 0.35;
+  opacity: 0.4;
+}
+
+.bd-flower circle {
+  fill: var(--blush);
+  opacity: 0.55;
+}
+
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(18px, -12px);
+  }
+}
+
+.drift {
+  animation: drift 22s ease-in-out infinite;
+}
+
+.drift-slow {
+  animation: drift 34s ease-in-out infinite;
+}
+
+.drift-slower {
+  animation: drift 48s ease-in-out infinite reverse;
+}
+
+/* A very fine dot texture. Large flat gradients band badly on cheap panels,
+   and a whisper of grain hides it. */
+.backdrop-grain {
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    rgb(80 64 40 / 9%) 1px,
+    transparent 0
+  );
+  background-size: 4px 4px;
+  inset: 0;
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+  position: absolute;
 }
 
 @media (prefers-color-scheme: dark) {
-  .bd-sun {
+  .backdrop::before {
+    background: linear-gradient(
+      180deg,
+      #1b2033 0%,
+      #1d2030 26%,
+      #181b22 54%,
+      var(--paper) 82%
+    );
+  }
+
+  .orb {
+    filter: blur(86px);
+    opacity: 0.3;
+  }
+
+  .orb-c {
     opacity: 0.22;
   }
 
-  .bd-sun-halo {
-    opacity: 0.08;
+  .bd-sun {
+    fill: #ffe9b0;
+    opacity: 0.35;
+  }
+
+  .bd-glow-in {
+    stop-opacity: 0.22;
   }
 
   .bd-cloud ellipse {
+    opacity: 0.12;
+  }
+
+  .bd-mountains {
     opacity: 0.3;
+  }
+
+  .bd-far-top {
+    stop-color: #2f6f4a;
+  }
+
+  .bd-far-bottom {
+    stop-color: #24543a;
+  }
+
+  .bd-near-top {
+    stop-color: #24543a;
+  }
+
+  .bd-near-bottom {
+    stop-color: #1a3d2c;
   }
 
   .bd-hill-far {
-    opacity: 0.2;
+    opacity: 0.55;
   }
 
   .bd-hill-near {
+    opacity: 0.7;
+  }
+
+  .bd-tuft path {
+    stroke: #6fbf8a;
     opacity: 0.3;
+  }
+
+  .backdrop-grain {
+    background-image: radial-gradient(
+      circle at 1px 1px,
+      rgb(255 255 255 / 5%) 1px,
+      transparent 0
+    );
+    mix-blend-mode: screen;
+    opacity: 0.6;
   }
 }
 

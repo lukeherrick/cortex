@@ -1,80 +1,134 @@
 /**
- * A faded cartoon landscape behind everything.
+ * The atmosphere behind everything.
  *
- * Fixed, non-interactive and aria-hidden — it is pure atmosphere. Kept very
- * low contrast on purpose: a background that competes with the question text
- * is a bug, not decoration. Colours come from theme tokens so it follows
- * light and dark.
+ * Three layers, back to front: a warm gradient sky, soft blurred colour orbs
+ * that drift, and a hand-drawn landscape. Deliberately very low contrast —
+ * a background that competes with question text is a defect, not decoration,
+ * so every element here sits well under the threshold where it could pull the
+ * eye off a prompt.
+ *
+ * Fixed, aria-hidden and pointer-inert. All drift stops under
+ * prefers-reduced-motion.
  */
 export default function Backdrop() {
   return (
     <div className="backdrop" aria-hidden="true">
+      {/* Blurred ambient orbs. CSS filters rather than SVG blur, which is
+          far cheaper to composite on a phone. */}
+      <div className="orb orb-a" />
+      <div className="orb orb-b" />
+      <div className="orb orb-c" />
+
       <svg
+        className="backdrop-art"
         viewBox="0 0 1200 800"
         preserveAspectRatio="xMidYMax slice"
         xmlns="http://www.w3.org/2000/svg"
       >
-        {/* sun / glow */}
-        <circle cx="1010" cy="130" r="72" className="bd-sun" />
-        <circle cx="1010" cy="130" r="112" className="bd-sun-halo" />
+        <defs>
+          <linearGradient id="bd-hill-far" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" className="bd-far-top" />
+            <stop offset="100%" className="bd-far-bottom" />
+          </linearGradient>
+          <linearGradient id="bd-hill-near" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" className="bd-near-top" />
+            <stop offset="100%" className="bd-near-bottom" />
+          </linearGradient>
+          <radialGradient id="bd-glow">
+            <stop offset="0%" className="bd-glow-in" />
+            <stop offset="100%" className="bd-glow-out" />
+          </radialGradient>
+        </defs>
 
-        {/* clouds */}
-        <g className="bd-cloud">
-          <ellipse cx="180" cy="135" rx="62" ry="30" />
-          <ellipse cx="228" cy="124" rx="44" ry="34" />
-          <ellipse cx="135" cy="146" rx="40" ry="22" />
+        {/* Sun and its glow. Kept near the horizontal middle: a phone only
+            sees the central slice of this viewBox, and a sun parked out at
+            x=1010 would simply not exist on the device this runs on. */}
+        <circle cx="760" cy="140" r="200" fill="url(#bd-glow)" />
+        <circle cx="760" cy="140" r="58" className="bd-sun" />
+
+        {/* drifting clouds */}
+        <g className="bd-cloud drift-slow">
+          <ellipse cx="470" cy="150" rx="70" ry="30" />
+          <ellipse cx="522" cy="138" rx="50" ry="36" />
+          <ellipse cx="420" cy="162" rx="44" ry="22" />
         </g>
-        <g className="bd-cloud">
-          <ellipse cx="700" cy="88" rx="52" ry="24" />
-          <ellipse cx="742" cy="80" rx="36" ry="28" />
+        <g className="bd-cloud drift-slower">
+          <ellipse cx="660" cy="250" rx="56" ry="24" />
+          <ellipse cx="704" cy="242" rx="40" ry="30" />
+        </g>
+        <g className="bd-cloud drift">
+          <ellipse cx="180" cy="120" rx="62" ry="26" />
+          <ellipse cx="228" cy="110" rx="44" ry="32" />
+        </g>
+        <g className="bd-cloud drift-slow">
+          <ellipse cx="1040" cy="196" rx="58" ry="25" />
+          <ellipse cx="1086" cy="186" rx="42" ry="30" />
         </g>
 
-        {/* floating molecules — two atoms and a bond */}
-        <g className="bd-mol">
-          <circle cx="330" cy="300" r="15" />
-          <circle cx="382" cy="272" r="11" />
-          <circle cx="378" cy="332" r="11" />
-          <path d="M330 300l52-28M330 300l48 32" />
+        {/* distant mountains */}
+        <path
+          d="M0 470l150-110 110 80 130-130 140 120 120-70 150 110 140-90 160 120v380H0Z"
+          className="bd-mountains"
+        />
+
+        {/* layered hills */}
+        <path
+          d="M0 560q160-96 320-44t320-56 300 36 260-48v432H0Z"
+          className="bd-hill-far"
+          fill="url(#bd-hill-far)"
+        />
+        <path
+          d="M0 652q200-80 400-24t340-30 300 54 160-18v446H0Z"
+          className="bd-hill-near"
+          fill="url(#bd-hill-near)"
+        />
+
+        {/* molecules floating in the middle distance */}
+        <g className="bd-mol drift">
+          <circle cx="500" cy="380" r="16" />
+          <circle cx="556" cy="350" r="11" />
+          <circle cx="552" cy="414" r="11" />
+          <path d="M500 380l56-30M500 380l52 34" />
         </g>
-        <g className="bd-mol">
-          <circle cx="880" cy="380" r="13" />
-          <circle cx="928" cy="356" r="9" />
-          <path d="M880 380l48-24" />
+        <g className="bd-mol drift-slow">
+          <circle cx="716" cy="440" r="13" />
+          <circle cx="766" cy="414" r="9" />
+          <path d="M716 440l50-26" />
         </g>
-        <g className="bd-mol">
-          <circle cx="140" cy="430" r="11" />
-          <circle cx="186" cy="452" r="8" />
-          <path d="M140 430l46 22" />
+        <g className="bd-mol drift-slower">
+          <circle cx="250" cy="330" r="14" />
+          <circle cx="302" cy="304" r="10" />
+          <path d="M250 330l52-26" />
         </g>
 
         {/* bubbles */}
         <g className="bd-bubble">
-          <circle cx="560" cy="250" r="7" />
-          <circle cx="612" cy="196" r="5" />
-          <circle cx="520" cy="188" r="4" />
-          <circle cx="1040" cy="330" r="6" />
-          <circle cx="250" cy="236" r="5" />
-          <circle cx="770" cy="300" r="4" />
+          <circle cx="560" cy="300" r="8" />
+          <circle cx="620" cy="240" r="5" />
+          <circle cx="516" cy="236" r="4" />
+          <circle cx="1060" cy="340" r="7" />
+          <circle cx="250" cy="232" r="5" />
+          <circle cx="730" cy="330" r="4" />
+          <circle cx="646" cy="470" r="6" />
+          <circle cx="470" cy="470" r="5" />
+          <circle cx="700" cy="196" r="4" />
         </g>
 
-        {/* far hills */}
-        <path
-          className="bd-hill-far"
-          d="M0 560q150-90 300-40t300-60 300 30 300-50v420H0Z"
-        />
-        {/* near hills */}
-        <path
-          className="bd-hill-near"
-          d="M0 650q180-80 360-20t340-30 300 50 200-10v380H0Z"
-        />
-
-        {/* grass tufts on the near hill */}
+        {/* grass and little flowers on the near hill */}
         <g className="bd-tuft">
-          <path d="M120 646q6-24 12 0M138 650q6-26 12 0" />
-          <path d="M520 636q6-24 12 0M538 640q6-26 12 0" />
-          <path d="M900 664q6-24 12 0M918 668q6-26 12 0" />
+          <path d="M120 690q7-28 14 0M142 696q7-30 14 0M452 676q7-28 14 0M476 682q7-30 14 0M600 690q7-28 14 0M624 696q7-30 14 0M720 682q7-28 14 0M744 688q7-30 14 0M940 704q7-28 14 0M966 710q7-30 14 0" />
+        </g>
+        <g className="bd-flower">
+          <circle cx="300" cy="688" r="6" />
+          <circle cx="528" cy="700" r="5" />
+          <circle cx="672" cy="712" r="6" />
+          <circle cx="770" cy="696" r="5" />
+          <circle cx="1090" cy="684" r="6" />
         </g>
       </svg>
+
+      {/* A whisper of grain, which stops the large flat gradients banding. */}
+      <div className="backdrop-grain" />
     </div>
   );
 }
