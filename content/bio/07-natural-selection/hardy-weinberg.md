@@ -35,6 +35,7 @@ items:
       - text: "Take the square root: q = sqrt(0.04) = 0.2"
       - text: "This is always the entry point. The affected fraction is the ONE genotype frequency you can read directly off the population, because every other phenotype is ambiguous."
       - text: "You cannot start from the 96% unaffected, because that is p^2 and 2pq mixed together and you cannot separate them by looking."
+      - text: "The recessive phenotype is the only window into the genotypes. Everyone else is standing behind frosted glass - carriers and pure dominants look identical from outside, and no amount of staring separates them. The affected group is the one pane you can see through, so you always start there."
       - text: "So the standard first move in any Hardy-Weinberg problem is: find q^2, take the square root, then get p from 1 - q."
     source: original
     verified: true
@@ -50,6 +51,7 @@ items:
       - text: "As a percentage, 32%."
       - text: "Worth pausing on that number. Only 4% are affected, but 32% silently carry the allele - eight times as many."
       - text: "That is a general feature of rare recessive conditions: carriers always vastly outnumber affected individuals, which is why such alleles persist even when the disorder is severe."
+      - text: "The allele survives by hiding. A recessive allele sitting next to a dominant one is a passenger, not a driver - selection never sees it, so it cannot be removed. Most copies are riding along in perfectly healthy carriers, which is why even a severe disorder never quite disappears."
       - text: "Check the total: p^2 is 0.64, 2pq is 0.32, q^2 is 0.04. They sum to 1.00, as they must."
     source: original
     verified: true
@@ -78,6 +80,7 @@ items:
       - text: "Its value is as a baseline. Calculate what the genotype frequencies SHOULD be if nothing is happening, then compare with what you observe."
       - text: "A match means nothing detectable is going on. A mismatch means one of the assumptions is being broken - and that is a finding."
       - text: "This is exactly the same logic as the chi-square null hypothesis: you predict the boring outcome so that an interesting one stands out."
+      - text: "It works the way a control group does, or the way you notice a clock only once it stops. Hardy-Weinberg describes the sound of nothing happening. You learn it so that when the numbers do not match, you can hear that something is."
       - text: "It also establishes something historically important: genetic variation does not simply disappear over generations, which was a serious objection to Darwin before this was worked out."
     source: original
     verified: true
@@ -104,6 +107,7 @@ items:
       - text: "The five conditions are: no mutation, no gene flow, a very large population, random mating, and no selection."
       - text: "Death that is random with respect to genotype is not selection. Every genotype is equally affected, so the proportions are unchanged."
       - text: "That is the crucial distinction. Selection is not about death rate but about whether death is RELATED to the trait."
+      - text: "A landslide that buries half a town is a catastrophe, but it is not a hiring policy. It did not pick anyone for being tall or fast. Selection is a filter with an opinion; indiscriminate death is just a smaller crowd with the same proportions."
       - text: "A population can have enormous mortality and still be in equilibrium, so long as the dying is indiscriminate."
       - text: "The other three options each break a condition: mate choice breaks random mating, small size allows drift, and migration is gene flow."
       - text: "Worth noting that in a very small population, random deaths would start to matter - but that is drift, driven by size, not by the mortality rate itself."

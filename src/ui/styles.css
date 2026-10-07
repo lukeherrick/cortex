@@ -137,8 +137,13 @@ button.quiet {
 /* ------------------------------------------------------------- backdrop */
 
 /*
- * Faded cartoon landscape. Deliberately low contrast — it must never compete
- * with question text. Fixed so it does not scroll, and inert to pointers.
+ * A cartoon forest floor. Chunky rounded shapes, gradient fills, grain over
+ * the top — the shapes carry real colour rather than being pale outlines,
+ * because at phone size pale outlines read as no background at all.
+ *
+ * Weighted to the bottom of the viewport. Opaque cards cover the middle of
+ * the screen, so the illustration can be saturated down there while the sky
+ * stays quiet behind headings and body copy.
  */
 .backdrop {
   bottom: 0;
@@ -151,19 +156,14 @@ button.quiet {
   z-index: 0;
 }
 
-/*
- * The sky: a quiet dawn wash, misty green settling into stone. Much flatter
- * than it was. A strong gradient reads as a poster behind the cards, and the
- * brief here is sleek and clean - the background's job is to feel like air,
- * not to be looked at.
- */
+/* The sky: soft dawn, misty green into stone. */
 .backdrop::before {
   background: linear-gradient(
     180deg,
-    #e8eee0 0%,
-    #eef1e7 28%,
-    #f3f3ec 54%,
-    var(--paper) 78%
+    #e7efe1 0%,
+    #eef2e8 30%,
+    #f3f4ed 58%,
+    var(--paper) 80%
   );
   content: '';
   inset: 0;
@@ -179,9 +179,9 @@ button.quiet {
 /* ---- ambient orbs ---- */
 
 /*
- * Ambient colour. Opacity is capped low on purpose: secondary text
- * (--ink-soft) sits directly on this wash with no card behind it, and a
- * stronger orb drags that pairing under the 4.5:1 contrast floor.
+ * Opacity is capped low: secondary text (--ink-soft) sits straight on this
+ * wash with no card behind it, and a stronger orb drags that pairing under
+ * the 4.5:1 contrast floor.
  */
 .orb {
   border-radius: 50%;
@@ -191,6 +191,7 @@ button.quiet {
 }
 
 .orb-a {
+  animation: orbit 30s ease-in-out infinite;
   background: #a9c7a4;
   height: 44vmin;
   left: -12vmin;
@@ -199,20 +200,12 @@ button.quiet {
 }
 
 .orb-b {
-  background: #e6d3a4;
+  animation: orbit 38s ease-in-out infinite reverse;
+  background: #edd9a6;
   height: 50vmin;
   right: -16vmin;
-  top: 4vmin;
+  top: 2vmin;
   width: 50vmin;
-}
-
-.orb-c {
-  background: #bcc9b2;
-  height: 38vmin;
-  left: 38%;
-  top: 26vmin;
-  width: 38vmin;
-  opacity: 0.18;
 }
 
 @keyframes orbit {
@@ -225,96 +218,112 @@ button.quiet {
   }
 }
 
-.orb-a {
-  animation: orbit 26s ease-in-out infinite;
-}
-
-.orb-b {
-  animation: orbit 34s ease-in-out infinite reverse;
-}
-
-.orb-c {
-  animation: orbit 30s ease-in-out infinite 4s;
-}
-
-/* ---- landscape ---- */
+/* ---- sky furniture ---- */
 
 .bd-sun {
-  fill: #fdf6e3;
-  opacity: 0.6;
+  fill: #fdf0cf;
+  opacity: 0.9;
 }
 
 .bd-glow-in {
-  stop-color: #e8d7a8;
-  stop-opacity: 0.3;
+  stop-color: #f2dda8;
+  stop-opacity: 0.5;
 }
 
 .bd-glow-out {
-  stop-color: #e8d7a8;
+  stop-color: #f2dda8;
   stop-opacity: 0;
 }
 
-.bd-cloud ellipse {
+.bd-cloud rect,
+.bd-cloud circle {
   fill: #fff;
-  opacity: 0.45;
+  opacity: 0.72;
 }
 
-.bd-mountains {
-  fill: #8f9d91;
-  opacity: 0.12;
+/* ---- hills, back to front ---- */
+
+.bd-h1-top {
+  stop-color: #cfe0b8;
 }
 
-.bd-far-top {
-  stop-color: #b7cdac;
+.bd-h1-bot {
+  stop-color: #b2cfa0;
 }
 
-.bd-far-bottom {
-  stop-color: #9bbb97;
+.bd-h2-top {
+  stop-color: #a9cb97;
+  stop-opacity: 1;
 }
 
-.bd-near-top {
-  stop-color: #9bbb97;
+.bd-h2-bot {
+  stop-color: #85b57f;
 }
 
-.bd-near-bottom {
-  stop-color: #7ba67d;
+.bd-h3-top {
+  stop-color: #7fae77;
 }
 
-.bd-hill-far {
-  opacity: 0.26;
+.bd-h3-bot {
+  stop-color: #5d9163;
 }
 
-.bd-hill-near {
-  opacity: 0.36;
+/* ---- trees and bushes ---- */
+
+.bd-can-top {
+  stop-color: #8fc08a;
 }
 
-.bd-mol circle {
-  fill: var(--flask);
-  opacity: 0.2;
+.bd-can-bot {
+  stop-color: #5f9a6b;
 }
 
-.bd-mol path {
-  stroke: var(--flask);
-  stroke-width: 4;
-  opacity: 0.2;
+.bd-tree rect {
+  fill: #a37f5f;
 }
 
-.bd-bubble circle {
-  fill: var(--flask);
-  opacity: 0.22;
+.bd-bush circle {
+  fill: #6ea371;
+  opacity: 0.9;
 }
 
-.bd-tuft path {
+/* ---- toadstools ---- */
+
+/* A soft drop so the caps sit on the ground rather than float over it. */
+.bd-shroom {
+  filter: drop-shadow(0 3px 2px rgb(40 60 40 / 18%));
+}
+
+.bd-cap-top {
+  stop-color: #e08b76;
+}
+
+.bd-cap-bot {
+  stop-color: #c86a55;
+}
+
+.bd-stem {
+  fill: #f6ead8;
+}
+
+.bd-spot {
+  fill: #fdf4e6;
+  opacity: 0.95;
+}
+
+/* ---- ground detail ---- */
+
+.bd-fern path {
   fill: none;
-  stroke: #5e8a62;
+  stroke: #487a52;
   stroke-linecap: round;
-  stroke-width: 3;
-  opacity: 0.3;
+  stroke-width: 5;
+  opacity: 0.75;
 }
 
-.bd-flower circle {
-  fill: #d6b9a8;
-  opacity: 0.45;
+.bd-fly circle {
+  fill: #ffe9a8;
+  opacity: 0.85;
 }
 
 @keyframes drift {
@@ -339,8 +348,11 @@ button.quiet {
   animation: drift 48s ease-in-out infinite reverse;
 }
 
-/* A very fine dot texture. Large flat gradients band badly on cheap panels,
-   and a whisper of grain hides it. */
+/*
+ * Fine dot texture. Flat gradients band badly on cheap panels and a whisper
+ * of grain hides it; it also gives the flat shapes the tactile feel the
+ * style depends on.
+ */
 .backdrop-grain {
   background-image: radial-gradient(
     circle at 1px 1px,
@@ -359,65 +371,95 @@ button.quiet {
     background: linear-gradient(
       180deg,
       #1c2420 0%,
-      #1a211c 28%,
-      #171c18 56%,
-      var(--paper) 82%
+      #1a211c 30%,
+      #171c18 58%,
+      var(--paper) 80%
     );
   }
 
   .orb {
-    filter: blur(86px);
-    opacity: 0.3;
-  }
-
-  .orb-c {
-    opacity: 0.22;
+    filter: blur(90px);
+    opacity: 0.18;
   }
 
   .bd-sun {
     fill: #e6d7ae;
-    opacity: 0.22;
-  }
-
-  .bd-glow-in {
-    stop-opacity: 0.22;
-  }
-
-  .bd-cloud ellipse {
-    opacity: 0.12;
-  }
-
-  .bd-mountains {
     opacity: 0.3;
   }
 
-  .bd-far-top {
-    stop-color: #3b5c45;
+  .bd-glow-in {
+    stop-opacity: 0.2;
   }
 
-  .bd-far-bottom {
-    stop-color: #2e4738;
+  .bd-cloud rect,
+  .bd-cloud circle {
+    opacity: 0.12;
   }
 
-  .bd-near-top {
-    stop-color: #2e4738;
+  .bd-h1-top {
+    stop-color: #35503c;
   }
 
-  .bd-near-bottom {
-    stop-color: #23362b;
+  .bd-h1-bot {
+    stop-color: #2b4433;
   }
 
-  .bd-hill-far {
-    opacity: 0.55;
+  .bd-h2-top {
+    stop-color: #2b4433;
   }
 
-  .bd-hill-near {
+  .bd-h2-bot {
+    stop-color: #22382a;
+  }
+
+  .bd-h3-top {
+    stop-color: #22382a;
+  }
+
+  .bd-h3-bot {
+    stop-color: #1a2c21;
+  }
+
+  .bd-can-top {
+    stop-color: #3d6144;
+  }
+
+  .bd-can-bot {
+    stop-color: #2d4a34;
+  }
+
+  .bd-tree rect {
+    fill: #6b543f;
+  }
+
+  .bd-bush circle {
+    fill: #2f5038;
+  }
+
+  .bd-cap-top {
+    stop-color: #a35f4c;
+  }
+
+  .bd-cap-bot {
+    stop-color: #83472f;
+  }
+
+  .bd-stem {
+    fill: #cbbda6;
+  }
+
+  .bd-spot {
+    fill: #e8dcc6;
+  }
+
+  .bd-fern path {
+    stroke: #4e8159;
+    opacity: 0.6;
+  }
+
+  .bd-fly circle {
+    fill: #f2d98c;
     opacity: 0.7;
-  }
-
-  .bd-tuft path {
-    stroke: #7fa386;
-    opacity: 0.24;
   }
 
   .backdrop-grain {

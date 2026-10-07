@@ -33,6 +33,7 @@ items:
       - text: "So some deviation is expected even when the hypothesis is perfectly correct."
       - text: "The question is whether THIS much deviation is within what chance can produce, or too large to explain that way."
       - text: "Chi-square turns that into a number instead of an opinion. It measures total deviation, then compares it against how much chance alone typically produces."
+      - text: "Think of it as a surprise meter. Feed it your results and it tells you how startled a fair universe should be. A low score means nothing to see here; a high score means chance is struggling to explain this."
       - text: "That is why exams insist on it: 'close enough' is not evidence, and two people can disagree about it. A test statistic cannot be argued with."
     source: original
     verified: true
@@ -49,7 +50,9 @@ items:
       - text: "Second category: (40 - 50)^2 / 50 = 100 / 50 = 2"
       - text: "Add them: 2 + 2 = 4."
       - text: "Note the squaring. It makes every deviation positive, so a +10 and a -10 add up rather than cancelling to zero."
+      - text: "Without squaring you would be the person who is 10 minutes early on Monday and 10 minutes late on Tuesday and calls it perfect punctuality. On average, sure. In reality you were never once on time."
       - text: "And dividing by expected is what makes it fair - being 10 off when you expected 50 is serious, but being 10 off when you expected 5000 is nothing."
+      - text: "Same idea as money going missing. Ten pounds short from a fifty-pound till means someone has some explaining to do. Ten pounds short from five thousand is a rounding error. The size of the gap only means something next to the size of what you expected."
     source: original
     verified: true
   - id: bio.hered.chi-square.i3
@@ -63,6 +66,7 @@ items:
       - text: "With four categories that is 4 - 1 = 3 degrees of freedom."
       - text: "The reason for the minus one: once you know the total and three of the four counts, the fourth is forced. It has no freedom to vary."
       - text: "So only three of the numbers are genuinely free, and the test accounts for that."
+      - text: "Picture a test with four sections adding to 100 marks. Once someone tells you three of your section scores, the fourth is not a mystery - it is arithmetic. It was never free to be anything else."
       - text: "This matters because the critical value depends on it. At p = 0.05, the critical value is 3.84 for 1 degree of freedom but 7.82 for 3."
       - text: "Using the wrong row of the table is the most common way to get the right chi-square and still reach the wrong conclusion."
     source: original
@@ -92,6 +96,7 @@ items:
       - text: "What that means in plain terms: if the expected ratio were truly correct, a deviation this large would occur less than 5% of the time by chance. So something other than chance is probably involved."
       - text: "Note it was a near thing - 4.0 against 3.84. Had it been 3.5 you would have failed to reject."
       - text: "Careful with the wording. You REJECT the null hypothesis; you never 'prove the alternative'. And failing to reject is not proof that the hypothesis is true - only that you have no evidence against it."
+      - text: "Courts work the same way, and the parallel is worth holding onto. A jury returns 'not guilty', never 'innocent'. It is saying the evidence was not strong enough to convict, which is a very different claim from saying the person definitely did not do it. Failing to reject your hypothesis means exactly that: not enough evidence against it, not proof it is right."
       - text: "The null hypothesis in a genetics cross is always that the observed deviation is due to chance alone, and that the expected ratio holds."
     source: original
     verified: true
@@ -108,6 +113,7 @@ items:
       - text: "For completeness the others are 90, 30 and 30, and those four sum to 160 - always check that."
       - text: "Expected values come from the RATIO applied to your actual total, never from a different experiment's numbers."
       - text: "One caution: chi-square becomes unreliable when an expected count drops below about 5, so very small samples need a larger experiment rather than a clever calculation."
+      - text: "With tiny expected counts, a single extra fly can swing the whole statistic - like judging a restaurant from one review. The maths still produces a number, but the number has stopped meaning anything. More data, not more arithmetic."
     source: original
     verified: true
   - id: bio.hered.chi-square.i6
