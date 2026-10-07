@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { loadBundle } from '@/content';
+import { itemsAtDepth, loadBundle } from '@/content';
+import { STUDY_DEPTH } from '@/content/depth';
 import type { Item } from '@/content/types';
 import { gradeChoice } from '@/grading/choice';
 import { gradeNumeric } from '@/grading/numeric';
@@ -158,4 +159,36 @@ describe('content hygiene', () => {
       expect(topic.concept.trim().length).toBeGreaterThan(200);
     },
   );
+});
+
+/**
+ * Content the app never shows is content that does not exist.
+ *
+ * Each subject is studied at one configured depth, and `itemsAtDepth` drops
+ * anything outside it. That filter is silent: four AP-depth chemistry
+ * problems once sat in the bundle, passed every other check here, and were
+ * unreachable in the app for as long as they existed. Authoring an item at a
+ * depth its own subject is not studied at is always a mistake, so it fails
+ * the build now instead of quietly disappearing.
+ */
+describe('every authored item is reachable in the app', () => {
+  it('has no item hidden by its subject depth', () => {
+    const unreachable = bundle.topics.flatMap((topic) => {
+      const shown = new Set(
+        itemsAtDepth(topic, STUDY_DEPTH[topic.subject]).map((i) => i.id),
+      );
+      return topic.items
+        .filter((i) => !shown.has(i.id))
+        .map((i) => `${i.id} (depth ${i.depth}, subject ${topic.subject})`);
+    });
+    expect(unreachable).toEqual([]);
+  });
+
+  it('shows every item in the bundle', () => {
+    const reachable = bundle.topics.reduce(
+      (n, topic) => n + itemsAtDepth(topic, STUDY_DEPTH[topic.subject]).length,
+      0,
+    );
+    expect(reachable).toBe(allItems.length);
+  });
 });

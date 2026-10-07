@@ -25,7 +25,7 @@ items:
   - id: chem.stoich.limiting-reagent.i2
     tier: ap
     type: frq
-    depth: ap
+    depth: both
     prompt: "A student mixes 0.300 mol N2 and 0.600 mol H2 and measures 0.360 mol NH3. Identify the limiting reagent, calculate the percent yield, and give one physical reason the yield is below 100%."
     answer:
       model: "H2 is limiting. Theoretical yield is 0.400 mol NH3, so percent yield = 0.360 / 0.400 x 100 = 90.0%. The reaction is reversible and does not go to completion."

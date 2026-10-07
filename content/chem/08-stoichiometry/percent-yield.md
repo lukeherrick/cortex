@@ -83,7 +83,7 @@ items:
   - id: chem.stoich.percent-yield.i5
     tier: ap
     type: frq
-    depth: ap
+    depth: both
     prompt: "Industrial ammonia synthesis runs at only a few percent yield per pass through the reactor, yet the process is one of the most important in the world and is run at enormous scale. Explain why such a low per-pass yield is acceptable in industry but would be a problem in a school lab, and name the chemical reason the yield is low in the first place."
     answer:
       model: "The reaction is reversible and reaches equilibrium, so ammonia decomposes back to nitrogen and hydrogen as fast as it forms - it cannot go to completion in one pass no matter how long you wait. Industry gets around this by cooling the mixture to condense the ammonia out, then recycling the unreacted nitrogen and hydrogen back into the reactor. Because nothing is thrown away, the overall yield across many passes is very high even though each pass is low. A school lab has no recycle loop, so unreacted material is simply lost, and the per-pass yield is the final yield."

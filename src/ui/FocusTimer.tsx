@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import {
   DEFAULT_DURATIONS,
+  durationOf,
   formatRemaining,
   initialState,
   isComplete,
@@ -191,7 +192,7 @@ export default function FocusTimer({ technique, onOpenBuddy }: Props) {
             >
               {state.running
                 ? 'Pause'
-                : left === durations.focus
+                : left === durationOf(state.phase, durations)
                   ? 'Start'
                   : 'Resume'}
             </button>

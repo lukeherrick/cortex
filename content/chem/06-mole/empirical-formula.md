@@ -123,7 +123,7 @@ items:
   - id: chem.mole.empirical-formula.i5
     tier: ap
     type: frq
-    depth: ap
+    depth: both
     prompt: "A compound contains only carbon, hydrogen and oxygen. Burning 1.000 g of it produces 1.466 g of CO2 and 0.600 g of H2O. Its molar mass is 60.05 g/mol. Determine the empirical and molecular formulas, showing your reasoning."
     answer:
       model: "All the carbon leaves as CO2 and all the hydrogen as H2O. Moles CO2 = 1.466 / 44.009 = 0.03331, so moles C = 0.03331 and mass C = 0.4001 g. Moles H2O = 0.600 / 18.015 = 0.03331, and each water carries 2 H, so moles H = 0.06661 and mass H = 0.0671 g. Oxygen cannot be read from the products because burning adds oxygen from the air, so find it by subtraction: 1.000 - 0.4001 - 0.0671 = 0.5328 g, which is 0.5328 / 15.999 = 0.03330 mol. Dividing all three by the smallest (0.03330) gives C 1.00, H 2.00, O 1.00, so the empirical formula is CH2O with an empirical mass of 30.026. Then 60.05 / 30.026 = 2.00, so every subscript doubles: the molecular formula is C2H4O2, which is acetic acid."

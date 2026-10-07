@@ -113,7 +113,7 @@ items:
   - id: chem.atomic.isotopes.i6
     tier: ap
     type: frq
-    depth: ap
+    depth: both
     prompt: "A mass spectrometer analyses a sample of element X and finds two peaks: one at 62.930 amu with 69.17% abundance, and one at 64.928 amu with 30.83% abundance. Calculate the average atomic mass, identify the element, and explain why a mass spectrum shows separate peaks rather than one peak at the average."
     answer:
       model: "The average is (0.6917 x 62.930) + (0.3083 x 64.928) = 43.529 + 20.017 = 63.55 amu, which is copper. A mass spectrometer separates ions by mass, so each isotope arrives at its own position on the detector and produces its own peak - it is measuring individual atoms one at a time, not a bulk sample. The average atomic mass is a calculated quantity describing the mixture as a whole; no single atom has that mass, so nothing in the instrument could ever land there. The peak heights give the relative abundances, which is exactly the data needed to compute the average."

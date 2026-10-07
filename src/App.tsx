@@ -7,7 +7,8 @@ import {
   unitForTopic,
   unitsForSubject,
 } from '@/content';
-import type { Depth, Subject, Topic, Unit } from '@/content/types';
+import type { Subject, Topic, Unit } from '@/content/types';
+import { STUDY_DEPTH } from '@/content/depth';
 import { allAttempts, type AttemptRecord } from '@/data/attempts';
 import { lastExportAt as readLastExport } from '@/data/backup';
 import { cardMap, type CardRecord } from '@/data/cards';
@@ -55,7 +56,7 @@ export const appName = 'Cortex';
  * Biology is AP-only: Level 1 Biology was dropped because the owner cannot take
  * AP Biology at school, so there is no reason to learn a reduced version first.
  */
-const DEPTH: Record<Subject, Depth> = { bio: 'ap', chem: 'honors' };
+
 
 const SUBJECTS: readonly Subject[] = ['bio', 'chem'];
 
@@ -142,7 +143,7 @@ export default function App() {
     () =>
       bundle.topics.map((topic) => ({
         topic,
-        items: itemsAtDepth(topic, DEPTH[topic.subject]),
+        items: itemsAtDepth(topic, STUDY_DEPTH[topic.subject]),
       })),
     [bundle],
   );
@@ -223,7 +224,7 @@ export default function App() {
   if (view.kind === 'topic') {
     const { topic } = view;
     const unit = unitForTopic(bundle, topic);
-    const items = itemsAtDepth(topic, DEPTH[topic.subject]);
+    const items = itemsAtDepth(topic, STUDY_DEPTH[topic.subject]);
     const prereqs = topic.prereqs
       .map((id) => findTopic(bundle, id))
       .filter((t): t is Topic => t !== undefined)
@@ -376,7 +377,7 @@ export default function App() {
             entries: cramQueue(
               topics.map((topic) => ({
                 topic,
-                items: itemsAtDepth(topic, DEPTH[topic.subject]),
+                items: itemsAtDepth(topic, STUDY_DEPTH[topic.subject]),
               })),
             ),
             biome: unit.biome,
