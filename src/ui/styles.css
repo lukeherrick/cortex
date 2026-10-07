@@ -3,45 +3,50 @@
 :root {
   color-scheme: light dark;
 
-  --sun: #ffc542;
-  --sun-soft: #fff0cc;
-  --leaf: #2e9e5b;
-  --leaf-soft: #ddf3e5;
-  --flask: #3aa7d8;
-  --flask-soft: #dcf0fa;
-  --berry: #e0564a;
-  --berry-soft: #fde4e1;
+  /*
+   * Pulled from things that are actually this colour - moss, lichen, honey,
+   * river slate, terracotta, dried thistle. The earlier palette was candy
+   * bright, which fought the content for attention; these are desaturated
+   * enough to sit behind text all day. The cartoon biome mascots keep their
+   * own saturated colours and now read as the accent against this.
+   */
+  --sun: #c99433;
+  --sun-soft: #f4ead2;
+  --leaf: #4a8f5b;
+  --leaf-soft: #e2ece1;
+  --flask: #55909f;
+  --flask-soft: #e2ecee;
+  --berry: #b85f4d;
+  --berry-soft: #f4e5e0;
 
-  --paper: #fffdf7;
+  --paper: #f5f5ef;
   --card: #ffffff;
-  --ink: #22251f;
-  --ink-soft: #5e6459;
-  --line: #e8e4d8;
+  --ink: #232820;
+  --ink-soft: #5c6355;
+  --line: #e3e5db;
 
-  --blush: #f58aa8;
-  --blush-soft: #ffe4ec;
-  --grape: #9a7ad1;
-  --grape-soft: #efe7fb;
+  --blush: #c98982;
+  --blush-soft: #f5e7e4;
+  --grape: #867aa0;
+  --grape-soft: #eae8ef;
 
-  --radius: 28px;
-  --radius-sm: 16px;
+  --radius: 22px;
+  --radius-sm: 14px;
 
   /*
-   * Claymorphic depth: a soft outer drop plus a bright inset highlight along
-   * the top edge and a darker one along the bottom. That combination reads as
-   * an inflated, soft object rather than a flat rectangle with a shadow, and
-   * it keeps enough contrast at the edges to stay legible.
+   * A clean card edge rather than an inflated one. The old treatment added a
+   * dark inset along the bottom to look pillowy; at this radius that reads as
+   * grubby rather than soft, so depth is now carried by one wide, very light
+   * drop and a single hairline highlight on the top edge.
    */
   --shadow:
-    0 2px 4px rgb(80 64 40 / 5%),
-    0 10px 24px -8px rgb(80 64 40 / 12%),
-    inset 0 2px 0 rgb(255 255 255 / 85%),
-    inset 0 -3px 0 rgb(80 64 40 / 5%);
+    0 1px 2px rgb(54 62 48 / 4%),
+    0 10px 28px -12px rgb(54 62 48 / 14%),
+    inset 0 1px 0 rgb(255 255 255 / 70%);
   --shadow-lift:
-    0 4px 8px rgb(80 64 40 / 6%),
-    0 20px 44px -12px rgb(80 64 40 / 18%),
-    inset 0 2px 0 rgb(255 255 255 / 90%),
-    inset 0 -4px 0 rgb(80 64 40 / 6%);
+    0 2px 6px rgb(54 62 48 / 5%),
+    0 22px 48px -16px rgb(54 62 48 / 20%),
+    inset 0 1px 0 rgb(255 255 255 / 80%);
 
   --font: ui-rounded, 'Segoe UI Variable Display', 'Segoe UI', system-ui,
     -apple-system, sans-serif;
@@ -49,35 +54,33 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --sun: #ffd166;
-    --sun-soft: #3a3121;
-    --leaf: #52c782;
-    --leaf-soft: #1e3a2a;
-    --flask: #63c2ea;
-    --flask-soft: #1b3440;
-    --berry: #ff7d70;
-    --berry-soft: #3d2320;
-    --blush: #ff9fba;
-    --blush-soft: #3a222a;
-    --grape: #b79aea;
-    --grape-soft: #272036;
+    --sun: #e3b55e;
+    --sun-soft: #332c1d;
+    --leaf: #7ab98a;
+    --leaf-soft: #1e2e22;
+    --flask: #85b7c4;
+    --flask-soft: #1c2b2f;
+    --berry: #d98a76;
+    --berry-soft: #33211c;
+    --blush: #d9a49d;
+    --blush-soft: #2f2320;
+    --grape: #a89cc0;
+    --grape-soft: #262330;
 
-    --paper: #15171a;
-    --card: #1e2126;
-    --ink: #f2f1ea;
-    --ink-soft: #a8ada3;
-    --line: #2f343b;
+    --paper: #141713;
+    --card: #1d211b;
+    --ink: #eceee6;
+    --ink-soft: #a3aa9c;
+    --line: #2c322a;
 
     --shadow:
-      0 2px 4px rgb(0 0 0 / 28%),
-      0 12px 28px -8px rgb(0 0 0 / 40%),
-      inset 0 1px 0 rgb(255 255 255 / 7%),
-      inset 0 -3px 0 rgb(0 0 0 / 18%);
+      0 1px 2px rgb(0 0 0 / 30%),
+      0 12px 30px -12px rgb(0 0 0 / 46%),
+      inset 0 1px 0 rgb(255 255 255 / 6%);
     --shadow-lift:
-      0 4px 8px rgb(0 0 0 / 32%),
-      0 22px 48px -12px rgb(0 0 0 / 50%),
-      inset 0 1px 0 rgb(255 255 255 / 9%),
-      inset 0 -4px 0 rgb(0 0 0 / 22%);
+      0 2px 6px rgb(0 0 0 / 34%),
+      0 24px 52px -16px rgb(0 0 0 / 56%),
+      inset 0 1px 0 rgb(255 255 255 / 8%);
   }
 }
 
@@ -148,14 +151,19 @@ button.quiet {
   z-index: 0;
 }
 
-/* The sky itself: a warm vertical wash the orbs and art sit on top of. */
+/*
+ * The sky: a quiet dawn wash, misty green settling into stone. Much flatter
+ * than it was. A strong gradient reads as a poster behind the cards, and the
+ * brief here is sleek and clean - the background's job is to feel like air,
+ * not to be looked at.
+ */
 .backdrop::before {
   background: linear-gradient(
     180deg,
-    #ffeec9 0%,
-    #ffe3d6 22%,
-    #fdeae6 42%,
-    var(--paper) 72%
+    #e8eee0 0%,
+    #eef1e7 28%,
+    #f3f3ec 54%,
+    var(--paper) 78%
   );
   content: '';
   inset: 0;
@@ -177,34 +185,34 @@ button.quiet {
  */
 .orb {
   border-radius: 50%;
-  filter: blur(70px);
-  opacity: 0.4;
+  filter: blur(80px);
+  opacity: 0.3;
   position: absolute;
 }
 
 .orb-a {
-  background: var(--blush);
-  height: 42vmin;
-  left: -10vmin;
-  top: -8vmin;
-  width: 42vmin;
+  background: #a9c7a4;
+  height: 44vmin;
+  left: -12vmin;
+  top: -10vmin;
+  width: 44vmin;
 }
 
 .orb-b {
-  background: var(--sun);
-  height: 48vmin;
-  right: -14vmin;
-  top: 6vmin;
-  width: 48vmin;
+  background: #e6d3a4;
+  height: 50vmin;
+  right: -16vmin;
+  top: 4vmin;
+  width: 50vmin;
 }
 
 .orb-c {
-  background: var(--grape);
-  height: 36vmin;
+  background: #bcc9b2;
+  height: 38vmin;
   left: 38%;
-  top: 28vmin;
-  width: 36vmin;
-  opacity: 0.24;
+  top: 26vmin;
+  width: 38vmin;
+  opacity: 0.18;
 }
 
 @keyframes orbit {
@@ -232,52 +240,52 @@ button.quiet {
 /* ---- landscape ---- */
 
 .bd-sun {
-  fill: #fff6d8;
-  opacity: 0.85;
+  fill: #fdf6e3;
+  opacity: 0.6;
 }
 
 .bd-glow-in {
-  stop-color: var(--sun);
-  stop-opacity: 0.45;
+  stop-color: #e8d7a8;
+  stop-opacity: 0.3;
 }
 
 .bd-glow-out {
-  stop-color: var(--sun);
+  stop-color: #e8d7a8;
   stop-opacity: 0;
 }
 
 .bd-cloud ellipse {
   fill: #fff;
-  opacity: 0.6;
+  opacity: 0.45;
 }
 
 .bd-mountains {
-  fill: var(--grape);
-  opacity: 0.16;
+  fill: #8f9d91;
+  opacity: 0.12;
 }
 
 .bd-far-top {
-  stop-color: #a8dd93;
+  stop-color: #b7cdac;
 }
 
 .bd-far-bottom {
-  stop-color: #74c47f;
+  stop-color: #9bbb97;
 }
 
 .bd-near-top {
-  stop-color: #74c47f;
+  stop-color: #9bbb97;
 }
 
 .bd-near-bottom {
-  stop-color: #4ea968;
+  stop-color: #7ba67d;
 }
 
 .bd-hill-far {
-  opacity: 0.3;
+  opacity: 0.26;
 }
 
 .bd-hill-near {
-  opacity: 0.42;
+  opacity: 0.36;
 }
 
 .bd-mol circle {
@@ -298,15 +306,15 @@ button.quiet {
 
 .bd-tuft path {
   fill: none;
-  stroke: #2f7f46;
+  stroke: #5e8a62;
   stroke-linecap: round;
   stroke-width: 3;
-  opacity: 0.4;
+  opacity: 0.3;
 }
 
 .bd-flower circle {
-  fill: var(--blush);
-  opacity: 0.55;
+  fill: #d6b9a8;
+  opacity: 0.45;
 }
 
 @keyframes drift {
@@ -350,9 +358,9 @@ button.quiet {
   .backdrop::before {
     background: linear-gradient(
       180deg,
-      #1b2033 0%,
-      #1d2030 26%,
-      #181b22 54%,
+      #1c2420 0%,
+      #1a211c 28%,
+      #171c18 56%,
       var(--paper) 82%
     );
   }
@@ -367,8 +375,8 @@ button.quiet {
   }
 
   .bd-sun {
-    fill: #ffe9b0;
-    opacity: 0.35;
+    fill: #e6d7ae;
+    opacity: 0.22;
   }
 
   .bd-glow-in {
@@ -384,19 +392,19 @@ button.quiet {
   }
 
   .bd-far-top {
-    stop-color: #2f6f4a;
+    stop-color: #3b5c45;
   }
 
   .bd-far-bottom {
-    stop-color: #24543a;
+    stop-color: #2e4738;
   }
 
   .bd-near-top {
-    stop-color: #24543a;
+    stop-color: #2e4738;
   }
 
   .bd-near-bottom {
-    stop-color: #1a3d2c;
+    stop-color: #23362b;
   }
 
   .bd-hill-far {
@@ -408,8 +416,8 @@ button.quiet {
   }
 
   .bd-tuft path {
-    stroke: #6fbf8a;
-    opacity: 0.3;
+    stroke: #7fa386;
+    opacity: 0.24;
   }
 
   .backdrop-grain {

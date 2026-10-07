@@ -37,8 +37,8 @@ export default defineConfig({
          * theme_color behind the status bar, so anything else here shows as
          * a flash of the wrong colour every single time the app is opened.
          */
-        theme_color: '#ffeec9',
-        background_color: '#ffeec9',
+        theme_color: '#e8eee0',
+        background_color: '#e8eee0',
         start_url: base,
         scope: base,
         icons: [
