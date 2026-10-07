@@ -13,11 +13,12 @@ import {
   start,
   type TimerState,
 } from '@/focus/timer';
+import type { Technique } from '@/focus/techniques';
 import MeadowScene from '@/ui/MeadowScene';
 import { Sparkle } from '@/ui/art';
 
-const PHASE_BLURB: Record<TimerState['phase'], string> = {
-  focus: 'Phone face down, somewhere else if you can.',
+const FALLBACK_BLURB: Record<TimerState['phase'], string> = {
+  focus: 'One thing only. Phone somewhere else.',
   shortBreak: 'Stand up. Look out of a window. Do not open anything.',
   longBreak: 'Properly off. Walk about, eat something, let it settle.',
 };
@@ -80,11 +81,28 @@ function useWakeLock(active: boolean): boolean {
   return held;
 }
 
-export default function FocusTimer() {
-  const [state, setState] = useState<TimerState>(() => initialState());
+interface Props {
+  technique: Technique;
+  onOpenBuddy: () => void;
+}
+
+export default function FocusTimer({ technique, onOpenBuddy }: Props) {
+  const durations = technique.timer ?? DEFAULT_DURATIONS;
+  const [state, setState] = useState<TimerState>(() => initialState(durations));
   const [now, setNow] = useState(() => Date.now());
 
+  // Switching buddy mid-session would silently change the block length under
+  // the owner, so the clock is reloaded only while it is idle.
+  useEffect(() => {
+    setState((s) => (s.running ? s : initialState(durations)));
+  }, [durations]);
+
   const awake = useWakeLock(state.running);
+
+  const reminders =
+    state.phase === 'focus'
+      ? technique.focusReminders
+      : technique.breakReminders;
 
   // Re-render once a second. The timer itself is driven by deadlines, so this
   // only refreshes the display - drift here cannot affect the actual timing.
@@ -96,7 +114,7 @@ export default function FocusTimer() {
 
   const left = remainingAt(state, now);
   const done = isComplete(state, now);
-  const progress = progressOf(state, now);
+  const progress = progressOf(state, now, durations);
 
   const ring = 2 * Math.PI * 86;
 
@@ -105,6 +123,11 @@ export default function FocusTimer() {
       <MeadowScene phase={state.phase} running={state.running && !done} />
 
       <div className="focus-card card">
+        <button type="button" className="buddy-pill" onClick={onOpenBuddy}>
+          <span className="buddy-pill-name">{technique.name}</span>
+          <span className="buddy-pill-swap">change</span>
+        </button>
+
         <p className="eyebrow">{PHASE_LABEL[state.phase]}</p>
 
         <div className="focus-dial">
@@ -132,14 +155,26 @@ export default function FocusTimer() {
           </div>
         </div>
 
-        <p className="focus-blurb">{PHASE_BLURB[state.phase]}</p>
+        {/*
+          The chosen technique's own advice, shown at the moment it applies.
+          This is the whole reason picking a buddy changes anything.
+        */}
+        {reminders.length > 0 ? (
+          <ul className="focus-reminders">
+            {reminders.map((line) => (
+              <li key={line}>{line}</li>
+            ))}
+          </ul>
+        ) : (
+          <p className="focus-blurb">{FALLBACK_BLURB[state.phase]}</p>
+        )}
 
         <div className="focus-controls">
           {done ? (
             <button
               type="button"
               className="primary big"
-              onClick={() => setState(nextPhase(state, DEFAULT_DURATIONS))}
+              onClick={() => setState(nextPhase(state, durations))}
             >
               <Sparkle />{' '}
               {state.phase === 'focus' ? 'Take the break' : 'Back to it'}
@@ -154,7 +189,11 @@ export default function FocusTimer() {
                 )
               }
             >
-              {state.running ? 'Pause' : left === DEFAULT_DURATIONS.focus ? 'Start' : 'Resume'}
+              {state.running
+                ? 'Pause'
+                : left === durations.focus
+                  ? 'Start'
+                  : 'Resume'}
             </button>
           )}
 
@@ -162,14 +201,14 @@ export default function FocusTimer() {
             <button
               type="button"
               className="quiet"
-              onClick={() => setState(reset(state, DEFAULT_DURATIONS))}
+              onClick={() => setState(reset(state, durations))}
             >
               Reset
             </button>
             <button
               type="button"
               className="quiet"
-              onClick={() => setState(nextPhase(state, DEFAULT_DURATIONS))}
+              onClick={() => setState(nextPhase(state, durations))}
             >
               Skip
             </button>
